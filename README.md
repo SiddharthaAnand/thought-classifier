@@ -12,6 +12,8 @@ can provide real time feedback which the model takes into account
 and tries to learn and improve!
 
 ## How can I contribute?
+> This is a Work In Progress.
+
 Clone the repository.
 ```
 $ git clone https://github.com/SiddharthaAnand/thought-classifier.git
@@ -41,5 +43,6 @@ installed.
  * Debugger is active!
  * Debugger PIN: 129-594-436
 ```
+For working on machine learning models, you can switch to ml_code/ and start working.
 
 Start contributing :)
