@@ -1,10 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Thought Classifier</title>
-</head>
-<body>
+{% extends 'bootstrap/base.html' %}
 
-</body>
-</html>
+{% block content %}
+    <h1>What are my thoughts?</h1>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.search_word.label }}<br>
+            {{ form.search_word(size=300) }}
+        </p>
+        <p>{{ form.submit() }}</p>
+      <hr>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+    </form>
+{% endblock %}
