@@ -45,4 +45,10 @@ installed.
 ```
 For working on machine learning models, you can switch to ml_code/ and start working.
 
+## mongo installation
+```
+$ wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -
+OK
+```
+
 Start contributing :)
