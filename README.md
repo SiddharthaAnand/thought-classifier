@@ -14,7 +14,7 @@ and tries to learn and improve!
 ## How can I contribute?
 > This is a Work In Progress.
 
-Clone the repository.
+#### Clone the repository.
 ```
 $ git clone https://github.com/SiddharthaAnand/thought-classifier.git
 ```
@@ -45,7 +45,7 @@ installed.
 ```
 For working on machine learning models, you can switch to ml_code/ and start working.
 
-## mongo installation
+#### mongodb installation
 (The following commands works for Ubuntu 16.04).
 For a different system, follow [these steps](https://docs.mongodb.com/manual/tutorial).
 Import the public key used by the package management system.
