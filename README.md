@@ -79,3 +79,6 @@ $ mongo
 ```
 For further information regarding mongodb running on Ubuntu, [read on](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/).
 Start contributing :)
+
+## Dataset
+We are using Rotten Tomatoes reviews dataset.
