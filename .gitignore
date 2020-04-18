@@ -3,3 +3,4 @@ venv/
 __pycache__/
 data_models/*.tsv
 data_models/*.csv
+data_models/*.zip
