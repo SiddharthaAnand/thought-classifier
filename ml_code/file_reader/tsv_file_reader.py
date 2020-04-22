@@ -4,7 +4,9 @@ import pandas as pd
 
 class TSVFileReader(BaseFileReader):
     def __init__(self, filename=None, separator=None):
-        self.__init__("TSVReader", filename=filename, separator=separator)
+        super().__init__(reader="TSVReader")
+        self.filename = filename
+        self.separator = separator
 
     def read_file(self):
         pass
