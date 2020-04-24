@@ -10,10 +10,11 @@ Exploratory Analysis of the textual data available for sentiment analysis.
 """
 
 
-def analysis(filename=None, separator=None):
-    if filename is not None and separator is not None:
-        data = tsv_file_reader.convert_tsv_to_data_frame(filename=filename, separator=separator)
-        print(data)
+def analysis(filename=None, delimiter=None):
+    if filename is not None and delimiter is not None:
+        data = tsv_file_reader.convert_tsv_to_data_frame(filename=filename, delimiter=delimiter)
+        print(data['Text'])
+        # difference_between_dataframe_and_actual_file(filename, data_frame=data)
 
 
 if __name__ == '__main__':
@@ -31,5 +32,5 @@ if __name__ == '__main__':
 
     from ml_code.file_reader import tsv_file_reader
     filename = "data_models/raw_data/imdb_labelled.txt"
-    separator = "\t"
-    analysis(filename=filename, separator=separator)
+    delimiter = r'\s{3,}'
+    analysis(filename=filename, delimiter=delimiter)
