@@ -17,7 +17,8 @@ class TSVFileReader(BaseFileReader):
                            lineterminator='\n',
                            names=['Text', 'Polarity'],
                            header=None,
-                           na_values=[""])
+                           na_values=[""],
+                           engine='python')
 
 
 def convert_tsv_to_data_frame(filename=None, delimiter=None):
