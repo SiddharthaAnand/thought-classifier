@@ -3,24 +3,24 @@ import pandas as pd
 
 
 class TSVFileReader(BaseFileReader):
-    def __init__(self, filename=None, separator=None):
+    def __init__(self, filename=None, delimiter=None):
         super().__init__(reader="TSVReader")
         self.filename = filename
-        self.separator = separator
+        self.delimiter = delimiter
 
     def read_file(self):
         pass
 
     def convert_to_df(self):
         return pd.read_csv(filepath_or_buffer=self.filename,
-                           sep=self.separator,
+                           delimiter=self.delimiter,
                            lineterminator='\n',
                            names=['Text', 'Polarity'],
                            header=None,
                            na_values=[""])
 
 
-def convert_tsv_to_data_frame(filename=None, separator=None):
-    tsv_converter = TSVFileReader(filename=filename, separator=separator)
+def convert_tsv_to_data_frame(filename=None, delimiter=None):
+    tsv_converter = TSVFileReader(filename=filename, delimiter=delimiter)
     return tsv_converter.convert_to_df()
 
