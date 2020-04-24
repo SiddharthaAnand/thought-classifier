@@ -8,13 +8,34 @@ Exploratory Analysis of the textual data available for sentiment analysis.
 ##      Generate a model
 ##      Pickle/serialize the model
 """
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 
-def analysis(filename=None, delimiter=None):
+def read_and_reindex(filename=None, delimiter=None):
     if filename is not None and delimiter is not None:
         data = tsv_file_reader.convert_tsv_to_data_frame(filename=filename, delimiter=delimiter)
-        print(data['Text'])
-        # difference_between_dataframe_and_actual_file(filename, data_frame=data)
+
+        ############################################
+        #   Some basic information about data   ####
+        ############################################
+        print("Size of the dataset: %d " %(len(data['Text'])))
+
+        # Shuffle the data randomly to avoid biasness while collection of the data
+        data = data.reindex(np.random.permutation(data.index))
+        data = data[['Text', 'Polarity']]
+        return data
+
+
+"""
+Check for imbalance in the dataset during the model training phase.
+"""
+
+
+def visualize_target_class_frequency(data=None):
+    sns.catplot(x='Polarity', data=data, kind="count", height=5, aspect=1.5, palette='PuBuGn_d')
+    plt.show()
 
 
 if __name__ == '__main__':
@@ -33,4 +54,5 @@ if __name__ == '__main__':
     from ml_code.file_reader import tsv_file_reader
     filename = "data_models/raw_data/imdb_labelled.txt"
     delimiter = r'\s{3,}'
-    analysis(filename=filename, delimiter=delimiter)
+    reindexed_data = read_and_reindex(filename=filename, delimiter=delimiter)
+    visualize_target_class_frequency(reindexed_data)
