@@ -46,7 +46,10 @@ Clean the text:
 
 
 def clean_up_data(data=None):
-    pass
+    tc = text_count.TextCount()
+    df_eda = tc.fit_transform(data.Text)
+    df_eda['Polarity'] = data.Polarity
+    return df_eda
 
 
 if __name__ == '__main__':
@@ -63,7 +66,10 @@ if __name__ == '__main__':
     sys.path.insert(0, '/home/sid/github/thought-classifier/')
 
     from ml_code.file_reader import tsv_file_reader
+    from ml_code.pre_processing import text_count
+
     filename = "data_models/raw_data/imdb_labelled.txt"
     delimiter = r'\s{3,}'
     reindexed_data = read_and_reindex(filename=filename, delimiter=delimiter)
-    visualize_target_class_frequency(reindexed_data)
+    # visualize_target_class_frequency(reindexed_data)
+    print(clean_up_data(reindexed_data))
