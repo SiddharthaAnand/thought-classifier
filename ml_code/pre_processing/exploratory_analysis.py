@@ -38,6 +38,17 @@ def visualize_target_class_frequency(data=None):
     plt.show()
 
 
+"""
+Clean the text:
+1. Remove extra spaces and convert variable spaces to a single space.
+2. Take only english alphabet characters.
+"""
+
+
+def clean_up_data(data=None):
+    pass
+
+
 if __name__ == '__main__':
     """
     This part is used for separate analysis and running of this code.
