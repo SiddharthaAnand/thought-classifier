@@ -22,4 +22,3 @@ class TextCount(BaseEstimator, TransformerMixin):
             'count_words': count_words
         })
         return df
-

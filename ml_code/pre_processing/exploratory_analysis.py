@@ -29,12 +29,17 @@ def read_and_reindex(filename=None, delimiter=None):
 
 
 """
-Check for imbalance in the dataset during the model training phase.
+Check for imbalance in the data set during the model training phase.
 """
 
 
 def visualize_target_class_frequency(data=None):
     sns.catplot(x='Polarity', data=data, kind="count", height=5, aspect=1.5, palette='PuBuGn_d')
+    plt.show()
+
+
+def visualize_word_count_and_polarity(data=None):
+    sns.catplot(x='count_words', data=data, kind="count", height=5, aspect=2.5, palette='ch:.25')
     plt.show()
 
 
@@ -46,10 +51,11 @@ Clean the text:
 
 
 def clean_up_data(data=None):
-    tc = text_count.TextCount()
-    df_eda = tc.fit_transform(data.Text)
-    df_eda['Polarity'] = data.Polarity
-    return df_eda
+    if data is not None:
+        tc = text_count.TextCount()
+        df_eda = tc.fit_transform(data.Text)
+        df_eda['Polarity'] = data.Polarity
+        return df_eda
 
 
 if __name__ == '__main__':
@@ -72,4 +78,5 @@ if __name__ == '__main__':
     delimiter = r'\s{3,}'
     reindexed_data = read_and_reindex(filename=filename, delimiter=delimiter)
     # visualize_target_class_frequency(reindexed_data)
-    print(clean_up_data(reindexed_data))
+    word_count_frame = clean_up_data(reindexed_data)
+    visualize_word_count_and_polarity(word_count_frame)
