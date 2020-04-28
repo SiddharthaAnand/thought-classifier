@@ -15,7 +15,7 @@ class TSVFileReader(BaseFileReader):
         return pd.read_csv(filepath_or_buffer=self.filename,
                            delimiter=self.delimiter,
                            lineterminator='\n',
-                           names=['Text', 'Polarity'],
+                           names=['text', 'polarity'],
                            header=None,
                            na_values=[""],
                            engine='python')
