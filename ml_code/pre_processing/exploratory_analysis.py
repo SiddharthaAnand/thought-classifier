@@ -20,11 +20,11 @@ def read_and_reindex(filename=None, delimiter=None):
         ############################################
         #   Some basic information about data   ####
         ############################################
-        print("Size of the dataset: %d " %(len(data['Text'])))
+        print("Size of the dataset: %d " %(len(data['text'])))
 
         # Shuffle the data randomly to avoid biasness while collection of the data
         data = data.reindex(np.random.permutation(data.index))
-        data = data[['Text', 'Polarity']]
+        data = data[['text', 'polarity']]
         return data
 
 
@@ -34,7 +34,7 @@ Check for imbalance in the data set during the model training phase.
 
 
 def visualize_target_class_frequency(data=None):
-    sns.catplot(x='Polarity', data=data, kind="count", height=5, aspect=1.5, palette='PuBuGn_d')
+    sns.catplot(x='polarity', data=data, kind="count", height=5, aspect=1.5, palette='PuBuGn_d')
     plt.show()
 
 
@@ -53,9 +53,24 @@ Clean the text:
 def clean_up_data(data=None):
     if data is not None:
         tc = text_count.TextCount()
-        df_eda = tc.fit_transform(data.Text)
-        df_eda['Polarity'] = data.Polarity
+        df_eda = tc.fit_transform(data.text)
+        df_eda['polarity'] = data.polarity
         return df_eda
+
+
+"""
+Show stats for different target class with respect to no of words.
+"""
+
+
+def show_distribution(df=None, col=None):
+    print('Descriptive stats for {}'.format(col))
+    print('-' * (len(col) + 22))
+    print(df.groupby('polarity')[col].describe())
+    bins = np.arange(df[col].min(), df[col].max() + 1)
+    g = sns.FacetGrid(df, col='polarity', height=5, hue='polarity', palette='ch:.25')
+    g = g.map(sns.distplot, col, kde=False, norm_hist=True, bins=bins)
+    plt.show()
 
 
 if __name__ == '__main__':
@@ -79,4 +94,5 @@ if __name__ == '__main__':
     reindexed_data = read_and_reindex(filename=filename, delimiter=delimiter)
     # visualize_target_class_frequency(reindexed_data)
     word_count_frame = clean_up_data(reindexed_data)
-    visualize_word_count_and_polarity(word_count_frame)
+    # visualize_word_count_and_polarity(word_count_frame)
+    show_distribution(word_count_frame, 'count_words')
