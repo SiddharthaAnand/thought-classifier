@@ -73,6 +73,18 @@ def show_distribution(df=None, col=None):
     plt.show()
 
 
+"""
+Clean text using stemming/cleaning and see the output..
+"""
+
+
+def text_cleaner(df=None):
+    from ml_code.pre_processing import clean_text
+    ctext = clean_text.CleanText()
+    clean_review = ctext.fit_transform(df.text)
+    print(clean_review.sample(5))
+
+
 if __name__ == '__main__':
     """
     This part is used for separate analysis and running of this code.
@@ -92,7 +104,8 @@ if __name__ == '__main__':
     filename = "data_models/raw_data/imdb_labelled.txt"
     delimiter = r'\s{3,}'
     reindexed_data = read_and_reindex(filename=filename, delimiter=delimiter)
-    # visualize_target_class_frequency(reindexed_data)
-    word_count_frame = clean_up_data(reindexed_data)
-    # visualize_word_count_and_polarity(word_count_frame)
-    show_distribution(word_count_frame, 'count_words')
+    # 1. visualize_target_class_frequency(reindexed_data)
+    # 2. word_count_frame = clean_up_data(reindexed_data)
+    # 3. visualize_word_count_and_polarity(word_count_frame)
+    # show_distribution(word_count_frame, 'count_words')
+    text_cleaner(reindexed_data)
