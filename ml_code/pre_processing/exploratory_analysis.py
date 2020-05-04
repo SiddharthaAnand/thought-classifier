@@ -12,6 +12,7 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.model_selection import train_test_split
 
 
 def read_and_reindex(filename=None, delimiter=None):
@@ -98,6 +99,7 @@ def fill_empty_reviews_with_no_text(cleaned_review=None, filler_text=None):
     print('{} records have no words left after cleaning text'.format(cleaned_review[empty_review_rows].count()))
     print('-' * 22)
     cleaned_review.loc[empty_review_rows] = filler_text
+    return cleaned_review
 
 
 """
@@ -119,10 +121,19 @@ def analyse_count_vectorizer_feature(cleaned_review=None):
     plt.show()
 
 
+def create_test_data(df_eda=None, sr_clean=None):
+    from ml_code import pre_processing
+    df_model = df_eda
+    df_model['clean_text'] = sr_clean
+    df_model.columns.tolist()
+    print(df_eda)
+    return train_test_split(df_model.drop('polarity', axis=1), df_model.polarity, test_size=0.1, random_state=37)
+
+
 if __name__ == '__main__':
     """
     This part is used for separate analysis and running of this code.
-    sys.path.insert() is being used for running this module independantly
+    sys.path.insert() is being used for running this module independently
     of other modules for testing purposes.
     
     This portion will only run when this module is specifically called.
@@ -142,6 +153,8 @@ if __name__ == '__main__':
     # 2. word_count_frame = clean_up_data(reindexed_data)
     # 3. visualize_word_count_and_polarity(word_count_frame)
     # show_distribution(word_count_frame, 'count_words')
+    word_count_frame = clean_up_data(reindexed_data)
     cleaned_review = text_cleaner(reindexed_data)
-    fill_empty_reviews_with_no_text(cleaned_review=cleaned_review, filler_text="[no_review_here]")
-    analyse_count_vectorizer_feature(cleaned_review)
+    cleaned_review = fill_empty_reviews_with_no_text(cleaned_review=cleaned_review, filler_text="[no_review_here]")
+    # analyse_count_vectorizer_feature(cleaned_review)
+    X_train, X_test, y_train, y_test = create_test_data(word_count_frame, cleaned_review)
