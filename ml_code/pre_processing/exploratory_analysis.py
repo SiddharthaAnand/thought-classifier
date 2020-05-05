@@ -18,6 +18,13 @@ from sklearn.model_selection import train_test_split
 
 
 def read_and_reindex(filename=None, delimiter=None):
+    """
+    Read and reindex data to avoid data writing/storage biases.
+
+    :param filename:
+    :param delimiter:
+    :return:
+    """
     if filename is not None and delimiter is not None:
         data = tsv_file_reader.convert_tsv_to_data_frame(filename=filename, delimiter=delimiter)
 
@@ -32,12 +39,13 @@ def read_and_reindex(filename=None, delimiter=None):
         return data
 
 
-"""
-Check for imbalance in the data set during the model training phase.
-"""
-
-
 def visualize_target_class_frequency(data=None):
+    """
+    Check for imbalance in the data set during the model training phase.
+
+    :param data:
+    :return:
+    """
     sns.catplot(x='polarity', data=data, kind="count", height=5, aspect=1.5, palette='PuBuGn_d')
     plt.show()
 
@@ -47,14 +55,14 @@ def visualize_word_count_and_polarity(data=None):
     plt.show()
 
 
-"""
-Clean the text:
-1. Remove extra spaces and convert variable spaces to a single space.
-2. Take only english alphabet characters.
-"""
-
-
 def clean_up_data(data=None):
+    """
+    Clean the text:
+    1. Remove extra spaces and convert variable spaces to a single space.
+    2. Take only english alphabet characters.
+    :param data:
+    :return:
+    """
     if data is not None:
         tc = text_count.TextCount()
         df_eda = tc.fit_transform(data.text)
@@ -62,12 +70,13 @@ def clean_up_data(data=None):
         return df_eda
 
 
-"""
-Show stats for different target class with respect to no of words.
-"""
-
-
 def show_distribution(df=None, col=None):
+    """
+    Show stats for different target class with respect to no of words.
+    :param df:
+    :param col:
+    :return:
+    """
     print('Descriptive stats for {}'.format(col))
     print('-' * (len(col) + 22))
     print(df.groupby('polarity')[col].describe())
@@ -77,12 +86,12 @@ def show_distribution(df=None, col=None):
     plt.show()
 
 
-"""
-Clean text using stemming/cleaning and see the output..
-"""
-
-
 def text_cleaner(df=None):
+    """
+    Clean text using stemming/cleaning and see the output..
+    :param df:
+    :return:
+    """
     from ml_code.pre_processing import clean_text
     ctext = clean_text.CleanText()
     clean_review = ctext.fit_transform(df.text)
@@ -91,12 +100,13 @@ def text_cleaner(df=None):
     return clean_review
 
 
-"""
-Check and replace empty rows with some text/null/avg values
-"""
-
-
 def fill_empty_reviews_with_no_text(cleaned_review=None, filler_text=None):
+    """
+    Check and replace empty rows with some text/null/avg values
+    :param cleaned_review:
+    :param filler_text:
+    :return:
+    """
     empty_review_rows = cleaned_review == ''
     print('{} records have no words left after cleaning text'.format(cleaned_review[empty_review_rows].count()))
     print('-' * 22)
@@ -104,12 +114,12 @@ def fill_empty_reviews_with_no_text(cleaned_review=None, filler_text=None):
     return cleaned_review
 
 
-"""
-Get frequency of words in the reviews.
-"""
-
-
 def analyse_count_vectorizer_feature(cleaned_review=None):
+    """
+    Get frequency of words in the reviews.
+    :param cleaned_review:
+    :return:
+    """
     import collections
     import pandas as pd
     cv = CountVectorizer()
