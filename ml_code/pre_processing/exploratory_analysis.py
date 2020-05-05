@@ -2,9 +2,11 @@
 Exploratory Analysis of the textual data available for sentiment analysis.
 
 ##      Analysis of Raw data | Number of positives/negatives polarity | Need for a balanced training data
-##      Visualization
+##      Visualization of word count frequency | Visualization of word count after cleaning
 ##      Split into training/testing data
 ##      k-fold cross validation
+##      Use different kinds of feature selection (countvectorizer, word to vector, etc)
+##      Use different models for model comparison
 ##      Generate a model
 ##      Pickle/serialize the model
 """
@@ -122,7 +124,6 @@ def analyse_count_vectorizer_feature(cleaned_review=None):
 
 
 def create_test_data(df_eda=None, sr_clean=None):
-    from ml_code import pre_processing
     df_model = df_eda
     df_model['clean_text'] = sr_clean
     df_model.columns.tolist()
