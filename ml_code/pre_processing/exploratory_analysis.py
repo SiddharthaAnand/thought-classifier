@@ -141,6 +141,16 @@ def create_test_data(df_eda=None, sr_clean=None):
     return train_test_split(df_model.drop('polarity', axis=1), df_model.polarity, test_size=0.1, random_state=37)
 
 
+def grid_vect(clf, parameters_clf, X_train, X_test, parameters_text=None, vect=None, is_w2v=None):
+    textcountcols = ['countwords']
+    SIZE = 50
+    if is_w2v:
+        w2v_cols = []
+        for i in range(SIZE):
+            w2v_cols.append(i)
+        # features = FeatureUnion([('textcount')])
+
+
 if __name__ == '__main__':
     """
     This part is used for separate analysis and running of this code.
