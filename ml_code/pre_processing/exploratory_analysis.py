@@ -142,13 +142,20 @@ def create_test_data(df_eda=None, sr_clean=None):
 
 
 def grid_vect(clf, parameters_clf, X_train, X_test, parameters_text=None, vect=None, is_w2v=None):
+    from sklearn.pipeline import FeatureUnion
+    from ml_code.pre_processing import column_extractor
     textcountcols = ['countwords']
     SIZE = 50
     if is_w2v:
         w2v_cols = []
         for i in range(SIZE):
             w2v_cols.append(i)
-        # features = FeatureUnion([('textcount')])
+        features = FeatureUnion([('textcount', column_extractor.ColumnExtractor(cols=textcountcols)),
+                                 ('w2v', column_extractor.ColumnExtractor(cols=w2v_cols))], n_jobs=-1)
+    else:
+        features = FeatureUnion([('textcount', column_extractor.ColumnExtractor(cols=textcountcols)),
+                                 'pipe', PipeLine(['cleantext', column_extractor.ColumnExtractor(cols=)])])
+
 
 
 if __name__ == '__main__':
