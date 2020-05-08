@@ -142,7 +142,7 @@ def create_test_data(df_eda=None, sr_clean=None):
 
 
 def grid_vect(clf, parameters_clf, X_train, X_test, parameters_text=None, vect=None, is_w2v=None):
-    from sklearn.pipeline import FeatureUnion
+    from sklearn.pipeline import FeatureUnion, Pipeline
     from ml_code.pre_processing import column_extractor
     textcountcols = ['countwords']
     SIZE = 50
@@ -154,7 +154,7 @@ def grid_vect(clf, parameters_clf, X_train, X_test, parameters_text=None, vect=N
                                  ('w2v', column_extractor.ColumnExtractor(cols=w2v_cols))], n_jobs=-1)
     else:
         features = FeatureUnion([('textcount', column_extractor.ColumnExtractor(cols=textcountcols)),
-                                 'pipe', PipeLine(['cleantext', column_extractor.ColumnExtractor(cols=)])])
+                                 'pipe', Pipeline(['cleantext', column_extractor.ColumnExtractor(cols=)])])
 
 
 
