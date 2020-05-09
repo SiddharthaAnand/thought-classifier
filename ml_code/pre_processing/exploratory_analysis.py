@@ -180,7 +180,7 @@ def grid_vect(clf, parameters_clf, X_train, X_test, parameters_text=None, vect=N
 
     t0 = time()
     grid_search.fit(X_train, y_train)
-    print("done in %0.3fs", %(time() - t0))
+    print("done in %0.3fs" %(time() - t0))
     print()
 
     print("Best CV score: %0.3f" % grid_search.best_score_)
