@@ -143,6 +143,10 @@ def create_test_data(df_eda=None, sr_clean=None):
 
 def grid_vect(clf, parameters_clf, X_train, X_test, parameters_text=None, vect=None, is_w2v=None):
     from sklearn.pipeline import FeatureUnion, Pipeline
+    from sklearn.metrics import classification_report
+    from sklearn.model_selection import GridSearchCV
+    from pprint import pprint
+    from time import time
     from ml_code.pre_processing import column_extractor
     textcountcols = ['countwords']
     SIZE = 50
@@ -151,10 +155,46 @@ def grid_vect(clf, parameters_clf, X_train, X_test, parameters_text=None, vect=N
         for i in range(SIZE):
             w2v_cols.append(i)
         features = FeatureUnion([('textcount', column_extractor.ColumnExtractor(cols=textcountcols)),
-                                 ('w2v', column_extractor.ColumnExtractor(cols=w2v_cols))], n_jobs=-1)
+                                 ('w2v', column_extractor.ColumnExtractor(cols=w2v_cols))],
+                                n_jobs=-1)
     else:
         features = FeatureUnion([('textcount', column_extractor.ColumnExtractor(cols=textcountcols)),
-                                 'pipe', Pipeline(['cleantext', column_extractor.ColumnExtractor(cols=)])])
+                                 ('pipe', Pipeline([('cleantext', column_extractor.ColumnExtractor(cols='clean_text')),
+                                                    ('vect', vect)]))],
+                                n_jobs=-1)
+    pipeline = Pipeline([
+        ('features', features),
+        ('clf', clf)
+    ])
+
+    parameters = dict()
+    if(parameters_text):
+        parameters.update(parameters_text)
+    parameters.update(parameters_clf)
+
+    grid_search  = GridSearchCV(pipeline, parameters, n_jobs=-1, verbose=1, cv=5)
+    print("Performing grid search...")
+    print("pipeline:", [name for name, _ in pipeline.steps])
+    print("parameters:")
+    pprint(parameters)
+
+    t0 = time()
+    grid_search.fit(X_train, y_train)
+    print("done in %0.3fs", %(time() - t0))
+    print()
+
+    print("Best CV score: %0.3f" % grid_search.best_score_)
+    print("Best parameters set:")
+    best_parameters = grid_search.best_estimator_.get_params()
+    for param_name in sorted(parameters.keys()):
+        print("\t%s: %r" % (param_name, best_parameters[param_name]))
+
+    print("Test score with best_estimator_: %0.3f" % grid_search.best_estimator_.score(X_test, y_test))
+    print("\n")
+    print("Classification Report Test Data")
+    print(classification_report(y_test, grid_search.best_estimator_.predict(X_test)))
+
+    return grid_search
 
 
 
