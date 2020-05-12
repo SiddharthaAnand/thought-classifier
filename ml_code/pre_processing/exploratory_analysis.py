@@ -226,3 +226,28 @@ if __name__ == '__main__':
     cleaned_review = fill_empty_reviews_with_no_text(cleaned_review=cleaned_review, filler_text="[no_review_here]")
     # analyse_count_vectorizer_feature(cleaned_review)
     X_train, X_test, y_train, y_test = create_test_data(word_count_frame, cleaned_review)
+
+    # Parameter grid settings for the vectorizers (Count and TFIDF)
+    parameters_vect = {
+        'features__pipe__vect__max_df': (0.25, 0.5, 0.75),
+        'features__pipe__vect__ngram_range': ((1, 1), (1, 2)),
+        'features__pipe__vect__min_df': (1, 2)
+    }
+    # Parameter grid settings for MultinomialNB
+    parameters_mnb = {
+        'clf__alpha': (0.25, 0.5, 0.75)
+    }
+    # Parameter grid settings for LogisticRegression
+    parameters_logreg = {
+        'clf__C': (0.25, 0.5, 1.0),
+        'clf__penalty': ('l1', 'l2')
+    }
+
+    from sklearn.naive_bayes import MultinomialNB
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.externals import joblib
+    from sklearn.feature_extraction.text import CountVectorizer
+    from sklearn.feature_extraction.text import TfidfVectorizer
+
+    mnb = MultinomialNB()
+    logreg = LogisticRegression()
