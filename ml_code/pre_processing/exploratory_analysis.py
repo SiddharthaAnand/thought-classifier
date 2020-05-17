@@ -309,6 +309,7 @@ if __name__ == '__main__':
     #                    FIND CLASSIFIER AND MODEL                          #
     #            SET HYPER-PARAMETERS FOR THE CLASSIFIER                    #
     #                       GRID SEARCH THE MODEL                           #
+    #             MULTINOMIAL NAIVE BAYES && LOGISTIC REGRESSION            #
     #########################################################################
     parameters_mnb, parameters_vect, parameters_logreg = seed_model_before_start(X_train=X_train, X_test=X_test)
     find_model_using_gridsearch(parameters_mnb=parameters_mnb,
