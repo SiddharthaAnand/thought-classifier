@@ -134,6 +134,12 @@ def analyse_count_vectorizer_feature(cleaned_review=None):
 
 
 def create_test_data(df_eda=None, sr_clean=None):
+    """
+    Create training/testing data before the training begins.
+    :param df_eda: One dataframe which consists of the count values for every review
+    :param sr_clean: Another data frame which consists of the cleaned values for every review
+    :return: training and testing split data
+    """
     df_model = df_eda
     df_model['clean_text'] = sr_clean
     df_model.columns.tolist()
@@ -142,23 +148,34 @@ def create_test_data(df_eda=None, sr_clean=None):
 
 
 def grid_vect(clf, parameters_clf, X_train, X_test, parameters_text=None, vect=None, is_w2v=None):
+    """
+    Apply grid search for finding the best hyper parameters and accuracy of that model.
+    :param clf: classifier
+    :param parameters_clf: parameters of the classifier
+    :param X_train: train data
+    :param X_test: test data
+    :param parameters_text:
+    :param vect:
+    :param is_w2v:
+    :return: Results: Accuracy of the model
+    """
     from sklearn.pipeline import FeatureUnion, Pipeline
     from sklearn.metrics import classification_report
     from sklearn.model_selection import GridSearchCV
     from pprint import pprint
     from time import time
     from ml_code.pre_processing import column_extractor
-    textcountcols = ['count_words']
+    text_count_col = ['count_words']
     SIZE = 50
     if is_w2v:
         w2v_cols = []
         for i in range(SIZE):
             w2v_cols.append(i)
-        features = FeatureUnion([('textcount', column_extractor.ColumnExtractor(cols=textcountcols)),
+        features = FeatureUnion([('textcount', column_extractor.ColumnExtractor(cols=text_count_col)),
                                  ('w2v', column_extractor.ColumnExtractor(cols=w2v_cols))],
                                 n_jobs=-1)
     else:
-        features = FeatureUnion([('textcount', column_extractor.ColumnExtractor(cols=textcountcols)),
+        features = FeatureUnion([('textcount', column_extractor.ColumnExtractor(cols=text_count_col)),
                                  ('pipe', Pipeline([('cleantext', column_extractor.ColumnExtractor(cols='clean_text')),
                                                     ('vect', vect)]))],
                                 n_jobs=-1)
@@ -168,7 +185,7 @@ def grid_vect(clf, parameters_clf, X_train, X_test, parameters_text=None, vect=N
     ])
 
     parameters = dict()
-    if(parameters_text):
+    if parameters_text:
         parameters.update(parameters_text)
     parameters.update(parameters_clf)
 
@@ -197,6 +214,49 @@ def grid_vect(clf, parameters_clf, X_train, X_test, parameters_text=None, vect=N
     return grid_search
 
 
+def seed_model_before_start(X_train=None, X_test=None):
+    # Parameter grid settings for the vectorizers (Count and TFIDF)
+    parameters_vect = {
+        'features__pipe__vect__max_df': (0.25, 0.5, 0.75),
+        'features__pipe__vect__ngram_range': ((1, 1), (1, 2)),
+        'features__pipe__vect__min_df': (1, 2)
+    }
+    # Parameter grid settings for MultinomialNB
+    parameters_mnb = {
+        'clf__alpha': (0.25, 0.5, 0.75)
+    }
+    # Parameter grid settings for LogisticRegression
+    parameters_logreg = {
+        'clf__C': (0.25, 0.5, 1.0),
+        'clf__penalty': ('l1', 'l2')
+    }
+    return parameters_mnb, parameters_vect, parameters_logreg
+
+
+def find_model_using_gridsearch(parameters_mnb=None, parameters_vect=None, parameters_logreg=None):
+    """
+    Use the hyper parameters to find a classifier and a feature set which gives the best result.
+    :param parameters_mnb:
+    :param parameters_vect:
+    :param parameters_logreg:
+    :return:
+    """
+    from sklearn.naive_bayes import MultinomialNB
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.externals import joblib
+    from sklearn.feature_extraction.text import CountVectorizer
+
+    mnb = MultinomialNB()
+    logreg = LogisticRegression()
+
+    countvect = CountVectorizer()
+    # MultinomialNB
+    best_mnb_countvect = grid_vect(mnb, parameters_mnb, X_train, X_test, parameters_text=parameters_vect, vect=countvect)
+    joblib.dump(best_mnb_countvect, 'ml_code/output/best_mnb_countvect.pkl')
+    # LogisticRegression
+    best_logreg_countvect = grid_vect(logreg, parameters_logreg, X_train, X_test, parameters_text=parameters_vect, vect=countvect)
+    joblib.dump(best_logreg_countvect, 'ml_code/output/best_logreg_countvect.pkl')
+
 
 if __name__ == '__main__':
     """
@@ -214,49 +274,43 @@ if __name__ == '__main__':
     from ml_code.file_reader import tsv_file_reader
     from ml_code.pre_processing import text_count
 
+    #########################################################################
+    #                  REVIEW FILE DATA - IMDB ONLY                         #
+    #########################################################################
     filename = "data_models/raw_data/imdb_labelled.txt"
     delimiter = r'\s{3,}'
+    #########################################################################
+    #             READ AND REINDEX TO AVOID DATA COLLECTION BIAS            #
+    #########################################################################
     reindexed_data = read_and_reindex(filename=filename, delimiter=delimiter)
+    #########################################################################
+    #                          PRE-PROCESSING STEPS                         #
+    #                            ANALYZE RAW DATA                           #
+    #########################################################################
     # 1. visualize_target_class_frequency(reindexed_data)
     # 2. word_count_frame = clean_up_data(reindexed_data)
     # 3. visualize_word_count_and_polarity(word_count_frame)
     # show_distribution(word_count_frame, 'count_words')
     word_count_frame = clean_up_data(reindexed_data)
+    #########################################################################
+    #                            CLEAN DATA                                 #
+    #########################################################################
     cleaned_review = text_cleaner(reindexed_data)
     cleaned_review = fill_empty_reviews_with_no_text(cleaned_review=cleaned_review, filler_text="[no_review_here]")
+    #########################################################################
+    #                       WORD COUNT IN REVIEW                            #
+    #########################################################################
     # analyse_count_vectorizer_feature(cleaned_review)
+    #########################################################################
+    #                     CREATE TRAIN TEST DATA                            #
+    #########################################################################
     X_train, X_test, y_train, y_test = create_test_data(word_count_frame, cleaned_review)
-
-    # Parameter grid settings for the vectorizers (Count and TFIDF)
-    parameters_vect = {
-        'features__pipe__vect__max_df': (0.25, 0.5, 0.75),
-        'features__pipe__vect__ngram_range': ((1, 1), (1, 2)),
-        'features__pipe__vect__min_df': (1, 2)
-    }
-    # Parameter grid settings for MultinomialNB
-    parameters_mnb = {
-        'clf__alpha': (0.25, 0.5, 0.75)
-    }
-    # Parameter grid settings for LogisticRegression
-    parameters_logreg = {
-        'clf__C': (0.25, 0.5, 1.0),
-        'clf__penalty': ('l1', 'l2')
-    }
-
-    from sklearn.naive_bayes import MultinomialNB
-    from sklearn.linear_model import LogisticRegression
-    from sklearn.externals import joblib
-    from sklearn.feature_extraction.text import CountVectorizer
-    from sklearn.feature_extraction.text import TfidfVectorizer
-
-    mnb = MultinomialNB()
-    logreg = LogisticRegression()
-
-    countvect = CountVectorizer()
-    # MultinomialNB
-    best_mnb_countvect = grid_vect(mnb, parameters_mnb, X_train, X_test, parameters_text=parameters_vect, vect=countvect)
-    joblib.dump(best_mnb_countvect, 'ml_code/output/best_mnb_countvect.pkl')
-    # LogisticRegression
-    best_logreg_countvect = grid_vect(logreg, parameters_logreg, X_train, X_test, parameters_text=parameters_vect, vect=countvect)
-    joblib.dump(best_logreg_countvect, 'ml_code/output/best_logreg_countvect.pkl')
-
+    #########################################################################
+    #                    FIND CLASSIFIER AND MODEL                          #
+    #            SET HYPER-PARAMETERS FOR THE CLASSIFIER                    #
+    #                       GRID SEARCH THE MODEL                           #
+    #########################################################################
+    parameters_mnb, parameters_vect, parameters_logreg = seed_model_before_start(X_train=X_train, X_test=X_test)
+    find_model_using_gridsearch(parameters_mnb=parameters_mnb,
+                                parameters_vect=parameters_vect,
+                                parameters_logreg=parameters_logreg)
