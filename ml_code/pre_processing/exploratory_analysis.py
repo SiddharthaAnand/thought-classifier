@@ -148,7 +148,7 @@ def grid_vect(clf, parameters_clf, X_train, X_test, parameters_text=None, vect=N
     from pprint import pprint
     from time import time
     from ml_code.pre_processing import column_extractor
-    textcountcols = ['countwords']
+    textcountcols = ['count_words']
     SIZE = 50
     if is_w2v:
         w2v_cols = []
@@ -255,8 +255,8 @@ if __name__ == '__main__':
     countvect = CountVectorizer()
     # MultinomialNB
     best_mnb_countvect = grid_vect(mnb, parameters_mnb, X_train, X_test, parameters_text=parameters_vect, vect=countvect)
-    joblib.dump(best_mnb_countvect, '../output/best_mnb_countvect.pkl')
+    joblib.dump(best_mnb_countvect, 'ml_code/output/best_mnb_countvect.pkl')
     # LogisticRegression
     best_logreg_countvect = grid_vect(logreg, parameters_logreg, X_train, X_test, parameters_text=parameters_vect, vect=countvect)
-    joblib.dump(best_logreg_countvect, '../output/best_logreg_countvect.pkl')
+    joblib.dump(best_logreg_countvect, 'ml_code/output/best_logreg_countvect.pkl')
 
