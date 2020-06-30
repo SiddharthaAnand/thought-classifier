@@ -1,4 +1,5 @@
 import sys
+from os import urandom
 from flask import Flask, render_template, flash
 from flask_bootstrap import Bootstrap
 from configmodule import development_config
@@ -7,6 +8,7 @@ from search_form import SearchForm
 
 sys.path.insert(0, 'configmodule/')
 app = Flask(__name__)
+app.config['SECRET_KEY'] = urandom(32)
 Bootstrap(app)
 
 
