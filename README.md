@@ -12,7 +12,11 @@ can provide real time feedback which the model takes into account
 and tries to learn and improve!
 
 ## How can I contribute?
-> This is a Work In Progress.
+
+#### Create a virtual environment first.
+```
+$ python3 -m venv venv
+```
 
 #### Clone the repository.
 ```
