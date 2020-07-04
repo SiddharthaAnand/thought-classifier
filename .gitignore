@@ -8,3 +8,4 @@ data_models/raw_data/*.zip
 data_models/raw_data/*.tsv
 data_models/raw_data/*.csv
 data_models/raw_data
+ml_code/output/

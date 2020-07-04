@@ -24,6 +24,21 @@ Start the postgresql service.
 ```
 $ service postgresql start
 ```
+Create dev and other environment databases in psql.
+```
+$
+```
+Set up config for staging and production databases.
+Check environment variables in staging environment.
+```
+$ heroku config --app thought-classifier-staging
+```
+Create a database_url config variable.
+```
+$ heroku addons:create heroku-postgresql:hobby-dev --app thought-classifier-staging
+```
+Check back with the same command above to see if the variable got created.
+
 #### Clone the repository.
 ```
 $ git clone https://github.com/SiddharthaAnand/thought-classifier.git
@@ -54,41 +69,6 @@ installed.
  * Debugger PIN: 129-594-436
 ```
 For working on machine learning models, you can switch to ml_code/ and start working.
-
-#### mongodb installation
-(The following commands works for Ubuntu 16.04).
-For a different system, follow [these steps](https://docs.mongodb.com/manual/tutorial).
-Import the public key used by the package management system.
-```
-$ wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -
-OK
-```
-Create a list file for mongodb.
-```
-$ echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/4.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.2.list
-```
-Reload local package database.
-```
-$ sudo apt-get update
-```
-Install mongodb
-```
-$ sudo apt-get install -y mongodb-org
-```
-Start mongodb
-```
-$ sudo systemctl start mongod
-```
-For stopping mongodb
-```
-$ sudo systemctl stop mongod
-```
-Start using mongo
-```
-$ mongo
-```
-For further information regarding mongodb running on Ubuntu, [read on](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/).
-Start contributing :)
 
 ## Dataset
 We are using Rotten Tomatoes reviews dataset.
