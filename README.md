@@ -29,7 +29,30 @@ Create dev and other environment databases in psql.
 ```
 $
 ```
+For every change that you want to show up in staging/production, you
+need to do a git push to that environment before running heroku commands.
+
+To add heroku remotes.
+```
+$ git remote add stage https://git.heroku.com/thought-classifier-staging.git
+```
+Similarly for production as well.
+
+To remove a wrongly added remote.
+```
+$ git remote remove stage
+```
+
+For this repository, the staging remote name is 'stage' and
+production remote name is 'heroku'.
+
+
 Set up config for staging and production databases.
+```
+$ heroku config:set APP_SETTINGS=config.ProductionConfig --remote heroku
+```
+Run the same command above for setting the staging environment.
+
 Check environment variables in staging environment.
 ```
 $ heroku config --app thought-classifier-staging
@@ -145,3 +168,10 @@ as username. When you type psql, the db prompt is finally open!
 Error 3
 Installation of psycopg2
 [Try steps given.](https://www.psycopg.org/docs/install.html)
+
+Error 4
+```
+File "/app/.heroku/python/lib/python3.6/os.py", line 669, in __getitem__
+    raise KeyError(key) from None
+KeyError: 'APP_SETTINGS'
+```
