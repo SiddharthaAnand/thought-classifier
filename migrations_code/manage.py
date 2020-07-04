@@ -8,7 +8,7 @@ from flask_migrate import Migrate, MigrateCommand
 
 from main_app import app, db
 
-
+# MIGRATION_DIR = os.path.join()
 app.config.from_object(os.environ['APP_SETTINGS'])
 
 migrate = Migrate(app, db)
