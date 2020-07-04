@@ -17,7 +17,13 @@ and tries to learn and improve!
 ```
 $ python3 -m venv venv
 ```
+#### Installation
+[Install postgres](https://www.postgresql.org/download/linux/ubuntu/)
 
+Start the postgresql service.
+```
+$ service postgresql start
+```
 #### Clone the repository.
 ```
 $ git clone https://github.com/SiddharthaAnand/thought-classifier.git
@@ -86,3 +92,57 @@ Start contributing :)
 
 ## Dataset
 We are using Rotten Tomatoes reviews dataset.
+
+##### Troubleshooting for postgres
+Error 1
+```
+$ psql
+psql: could not connect to server: No such file or directory
+        Is the server running locally and accepting
+        connections on Unix domain socket "/var/run/postgresql/.s.PGSQL.5432"?
+```
+
+Try the following:
+```
+$ sudo systemctl start postgresql@11-main
+```
+This command should start the cluster.
+You can check the status of the cluster by following command.
+```
+$ pg_lsclusters
+11  main    5432 online postgres /var/lib/postgresql/11/main /var/log/postgresql/postgresql-11-main.log
+```
+Error 2
+```
+$ psql
+psql: FATAL:  role "sid" does not exist
+```
+This means there is no user named 'sid' in postgres.
+To simply login, just try the following:
+```
+sudo -u postgres -i
+```
+What this does is logs you in as 'postgres' user which is the default
+user in postgres.
+You need to create a new role and assign to it the same rights as the
+one of postgres.
+Try the following:
+First login as 'postgres'
+```
+$ sudo -u postgres -i
+$ createuser sid
+$ psql
+postgres=# alter user sid createdb;
+postgres=# exit
+$ sudo -u sid -i
+# createdb
+# psql
+sid=>
+```
+The db and role are named as postgres. You need to create a role in postgres
+which is the username and a db. Alter command gives your role the access
+rights as postgres. Then createdb command creates a db with the same name
+as username. When you type psql, the db prompt is finally open!
+Error 3
+Installation of psycopg2
+[Try steps given.](https://www.psycopg.org/docs/install.html)
