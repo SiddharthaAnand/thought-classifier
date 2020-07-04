@@ -1,3 +1,6 @@
+import sys
+sys.path.insert(0, '/home/sid/github/thought-classifier/')
+
 from main_app import db
 from sqlalchemy.dialects.postgresql import JSON
 
