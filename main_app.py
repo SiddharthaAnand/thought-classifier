@@ -3,11 +3,14 @@ from os import urandom, environ
 from flask import Flask, render_template, flash
 from flask_bootstrap import Bootstrap
 from search_form import SearchForm
+from flask_sqlalchemy import SQLAlchemy
 
 sys.path.insert(0, 'configmodule/')
 app = Flask(__name__)
 app.config['SECRET_KEY'] = urandom(32)
 app.config.from_object(environ['APP_SETTINGS'])
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 Bootstrap(app)
 
 
