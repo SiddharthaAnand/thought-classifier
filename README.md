@@ -175,3 +175,6 @@ File "/app/.heroku/python/lib/python3.6/os.py", line 669, in __getitem__
     raise KeyError(key) from None
 KeyError: 'APP_SETTINGS'
 ```
+This error comes because you have not set the environment variable
+called 'APP_SETTINGS' for the staging/production env.
+Run the command mentioned above and you should be ok.
