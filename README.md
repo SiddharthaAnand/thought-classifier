@@ -24,6 +24,7 @@ Start the postgresql service.
 ```
 $ service postgresql start
 ```
+For further steps to create postgres db, follow the steps at the end.
 Create dev and other environment databases in psql.
 ```
 $
@@ -38,7 +39,25 @@ Create a database_url config variable.
 $ heroku addons:create heroku-postgresql:hobby-dev --app thought-classifier-staging
 ```
 Check back with the same command above to see if the variable got created.
-
+Commit and push changes to heroku staging server.
+```
+$ git push stage master
+```
+Run the migration on staging.
+```
+$ heroku run python manage.py db upgrade --app thought-classifier-staging
+```
+Notice how we only ran the upgrade, not the init or migrate commands like before. We already have our migration file set up and ready to go; we just need to apply it against the Heroku database.
+Add postgres add on for production
+```
+$ heroku addons:create heroku-postgresql:hobby-dev --app thought-classifier-production
+Creating heroku-postgresql:hobby-dev on ⬢ thought-classifier-production... free
+Database has been created and is available
+ ! This database is empty. If upgrading, you can transfer
+ ! data from another database with pg:copy
+Created postgresql-shallow-45263 as DATABASE_URL
+Use heroku addons:docs heroku-postgresql to view documentation
+```
 #### Clone the repository.
 ```
 $ git clone https://github.com/SiddharthaAnand/thought-classifier.git
