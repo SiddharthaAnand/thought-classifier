@@ -7,6 +7,7 @@ class Result(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String())
+    # will store polarity
     result = db.Column(JSON)
     result_without_stopwords = db.Column(JSON)
 
