@@ -11,6 +11,9 @@ app.config['SECRET_KEY'] = urandom(32)
 app.config.from_object(environ['APP_SETTINGS'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
+from data_models.models import Result
+
 Bootstrap(app)
 
 
