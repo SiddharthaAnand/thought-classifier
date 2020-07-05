@@ -1,8 +1,7 @@
 import sys
 from os import urandom, environ
-from flask import Flask, render_template, flash
+from flask import Flask, render_template, request
 from flask_bootstrap import Bootstrap
-from search_form import SearchForm
 from flask_sqlalchemy import SQLAlchemy
 
 sys.path.insert(0, 'configmodule/')
@@ -17,14 +16,19 @@ from data_models.models import Result
 Bootstrap(app)
 
 
-@app.route('/')
-@app.route('/sentiment', methods=['POST', 'GET'])
+@app.route('/', methods=['POST', 'GET'])
 def my_sentiment():
-    thought_page = SearchForm()
-    if thought_page.validate_on_submit():
-        # Analzye code
-        flash('Analyzing your thoughts...')
-    return render_template('home.html', title='Understand your thoughts!', form=thought_page)
+    errors = []
+    results = {}
+    if request.method == 'POST':
+        try:
+            text = request.form['text']
+            # Do your logic with the text
+        except:
+            errors.append(
+                "Error encountered while processing. Please try again.."
+            )
+    return render_template('home.html', errors=errors, results=results)
 
 
 if __name__ == '__main__':

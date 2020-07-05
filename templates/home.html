@@ -1,24 +1,29 @@
-{% extends 'bootstrap/base.html' %}
-
-
-{% block content %}
-    <h1>Thought analyzer machine</h1>
-    <form action="" method="post" novalidate>
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.search_word.label }}<br>
-            {{ form.search_word(size=300) }}
-        </p>
-        <p>{{ form.submit() }}</p>
-      <hr>
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <ul>
-            {% for message in messages %}
-            <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-    </form>
-{% endblock %}
+<html>
+  <head>
+    <title>Wordcount</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <style>
+      .container {
+        max-width: 1000px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Wordcount 3000</h1>
+      <form role="form" method='POST' action='/'>
+        <div class="form-group">
+          <input type="text" name="text" class="form-control" id="url-box" placeholder="Enter your thoughts..." style="max-width: 300px;" autofocus required>
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+      </form>
+      <br>
+      {% for error in errors %}
+        <h4>{{ error }}</h4>
+      {% endfor %}
+    </div>
+    <script src="//code.jquery.com/jquery-2.2.1.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  </body>
+</html>
