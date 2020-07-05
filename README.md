@@ -131,6 +131,15 @@ To run commands to fetch data
 ```
 $ thoughtclassifier_dev=> select * from user_raw_data;
 ```
+
+## Installation of redis
+```
+$ wget http://download.redis.io/releases/redis-6.0.5.tar.gz
+$ tar xzf redis-6.0.5.tar.gz
+$ cd redis-6.0.5
+$ make
+```
+
 ##### Troubleshooting for postgres
 Error 1
 ```
