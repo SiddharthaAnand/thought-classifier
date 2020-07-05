@@ -1,4 +1,5 @@
 import sys
+import random
 from os import urandom, environ
 from flask import Flask, render_template, request
 from flask_bootstrap import Bootstrap
@@ -20,13 +21,27 @@ Bootstrap(app)
 def my_sentiment():
     errors = []
     results = {}
+    sentiment = ['Worse', 'Bad', 'an Average', 'Good', 'an Impressive', 'an Awesome']
     if request.method == 'POST':
         try:
             text = request.form['text']
+            # TODO
             # Do your logic with the text
-        except:
+            # Send this to the model
+            # Get result
+            results['text'] = text.strip()
+            results['sentiment'] = sentiment[random.randint(0, len(sentiment)-1)]
+            result = Result(
+                text=text,
+                result=results,
+                result_without_stopwords=results
+            )
+            # db.session.add(result)
+            # db.session.commit()
+        except Exception as e:
+            print(e)
             errors.append(
-                "Error encountered while processing. Please try again.."
+                "Error encountered while inserting to database. Please try again.."
             )
     return render_template('home.html', errors=errors, results=results)
 
