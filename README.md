@@ -95,7 +95,7 @@ $ pip install -r requirements.txt
 ```
 Try running the application.
 ```
-python main_app.py
+python migration_code/manage.py runserver
 ```
 If you see something like this, then congratulations the application is successfully
 installed.
@@ -115,6 +115,22 @@ For working on machine learning models, you can switch to ml_code/ and start wor
 ## Dataset
 We are using Rotten Tomatoes reviews dataset.
 
+## Running the database commands
+
+```
+$ psql
+```
+To open the command prompt for postgresql.
+To switch to the dev database.
+```
+$ \c thought-classifier_dev;
+sid=> \c thoughtclassifier_dev;
+You are now connected to database "thoughtclassifier_dev" as user "sid".
+```
+To run commands to fetch data
+```
+$ thoughtclassifier_dev=> select * from user_raw_data;
+```
 ##### Troubleshooting for postgres
 Error 1
 ```
