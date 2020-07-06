@@ -203,3 +203,12 @@ KeyError: 'APP_SETTINGS'
 This error comes because you have not set the environment variable
 called 'APP_SETTINGS' for the staging/production env.
 Run the command mentioned above and you should be ok.
+
+Error 5
+```
+$ redis-6.0.5/src/redis-server
+...
+Connection refused
+```
+Check if you have redis-server running or not.
+
