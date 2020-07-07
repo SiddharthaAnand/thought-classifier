@@ -29,7 +29,6 @@ def get_sentiment(text):
     # Send this to the model
     # Get result
     results = {
-        'text': text.strip(),
         'sentiment': sentiment[random.randint(0, len(sentiment) - 1)]
     }
     try:
