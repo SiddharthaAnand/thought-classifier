@@ -1,7 +1,8 @@
 import os
+import sys
 import redis
 from rq import Worker, Queue, Connection
-
+sys.path.insert(0, '/home/sid/github/thought-classifier/')
 
 listen = ['default']
 
