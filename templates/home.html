@@ -31,7 +31,9 @@
         <div class="col-sm-5 col-sm-offset-1">
             {% raw %}
             <div id="results">
-                You seem to be in {{ results }} mood!
+                <span ng-repeat="key in results">
+                    You seem to be in {{ results['sentiment'] }} mood!
+                </span>
             </div>
             {% endraw %}
             <br>
