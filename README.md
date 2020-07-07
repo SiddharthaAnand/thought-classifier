@@ -212,3 +212,15 @@ Connection refused
 ```
 Check if you have redis-server running or not.
 
+Error 6
+If you face this error in the terminal running the worker process.
+```
+  File "<frozen importlib._bootstrap>", line 986, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 969, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 956, in _find_and_load_unlocked
+ImportError: No module named 'main_app'
+```
+Then, add the following in the worker module at the top.
+```
+sys.path.insert(0, '/home/sid/github/thought-classifier/')
+```
