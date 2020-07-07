@@ -53,13 +53,12 @@ def index():
 @app.route('/sentiment', methods=['POST'])
 def analyze_sentiment():
     if request.method == 'POST':
-
-
-        user_entered_text = request.form['text']
-        print('Entering method: {}'.format(user_entered_text))
+        user_entered_data = json.loads(request.data.decode())
+        print('User enetered data: {}'.format(user_entered_data))
+        print('Entering method: {}'.format(user_entered_data["text"]))
         job = q.enqueue_call(
             func=get_sentiment,
-            args=(user_entered_text,),
+            args=(user_entered_data["text"],),
             result_ttl=5000
         )
         return job.get_id()
