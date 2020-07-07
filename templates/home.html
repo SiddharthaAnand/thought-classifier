@@ -29,19 +29,12 @@
             </div>
         </div>
         <div class="col-sm-5 col-sm-offset-1">
-            {% if results %}
-            <h2>You seem to be in {{ results }} mood!</h2>
+            {% raw %}
+            <div id="results">
+                You seem to be in {{ results }} mood!
+            </div>
+            {% endraw %}
             <br>
-            <!--<div id="Results">-->
-                <!--<table class="table table-striped" style="max-width: 300px;">-->
-                    <!--{% for result in results %}-->
-                    <!--<tr>-->
-                        <!--</td>-->
-                    <!--</tr>-->
-                    <!--{% endfor %}-->
-                <!--</table>-->
-            <!--</div>-->
-            {% endif %}
         </div>
     </div>
     <br><br>
