@@ -5,7 +5,7 @@ from rq import Queue
 from rq.job import Job
 from workers.worker import conn
 from os import urandom, environ
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 
@@ -70,7 +70,7 @@ def get_results(job_id):
     job = Job.fetch(job_id, connection=conn)
 
     if job.is_finished:
-        return str(job.result), 200
+        return jsonify(job.result)
     else:
         return "Nay!", 202
 
