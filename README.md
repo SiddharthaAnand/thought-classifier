@@ -140,6 +140,19 @@ $ cd redis-6.0.5
 $ make
 ```
 
+Install redis addon on heroku in the staging/production. Make sure your
+heroku account is verified(credit card details are added).
+```
+$ heroku addons:create redistogo:nano --app thought-classifier-staging
+Creating redistogo:nano on ⬢ thought-classifier-staging... free
+Created redistogo-tetrahedral-01369 as REDISTOGO_URL
+Use heroku addons:docs redistogo to view documentation
+```
+
+Check if the config for redis url is set with the following command.
+```
+$ heroku config --app thought-classifier-staging
+```
 ##### Troubleshooting for postgres
 Error 1
 ```
