@@ -153,6 +153,25 @@ Check if the config for redis url is set with the following command.
 ```
 $ heroku config --app thought-classifier-staging
 ```
+
+Once that is set, you need to setup the following files.
+These steps are needed since I am using a free account, so I have access
+to a single dyno. So, one process runs as a daemon. Ideally, it should
+be running on different dynos.
+- heroku.sh (Create)
+To write the command for running the main_app in a daemon process.
+Run the worker process.
+- Procfile (Update)
+Include heroku.sh.
+
+To test the changes locally, you can run
+```
+$ heroku local
+```
+Go to the local url and see if the app is up and running.
+If it is, then you are ready to push the changes to staging/production.
+
+
 ##### Troubleshooting for postgres
 Error 1
 ```
@@ -236,4 +255,16 @@ ImportError: No module named 'main_app'
 Then, add the following in the worker module at the top.
 ```
 sys.path.insert(0, '/home/sid/github/thought-classifier/')
+```
+Error 7
+If you are getting "Address already in use" error after running the following
+command,
+```
+$ heroku local
+```
+Then, you need to kill the python/flask process which is running as a
+daemon in the backend.
+```
+$ sudo netstat -nlp | grep 5000
+$ kill <pid>
 ```
