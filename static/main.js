@@ -20,6 +20,7 @@
               success(function(jobId) {
                 $log.log(jobId);
                 getSentiment(jobId);
+                $scope.results = null;
                 $scope.submitButtonText = 'Loading...';
                 $scope.loading = true;
               }).
