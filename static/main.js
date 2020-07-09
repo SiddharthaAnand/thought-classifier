@@ -6,7 +6,8 @@
 
   .controller('ThoughtAnalyzerController', ['$scope', '$log', '$http', '$timeout',
       function($scope, $log, $http, $timeout) {
-
+        $scope.submitButtonText = 'Submit';
+        $scope.loading = false;
         $scope.getResults = function() {
 
             $log.log("test");
@@ -19,6 +20,8 @@
               success(function(jobId) {
                 $log.log(jobId);
                 getSentiment(jobId);
+                $scope.submitButtonText = 'Loading...';
+                $scope.loading = true;
               }).
               error(function(error) {
                 $log.log(error);
@@ -39,6 +42,8 @@
               $log.log(data);
               $scope.results = data;
               $timeout.cancel(timeout);
+              $scope.submitButtonText = 'Submit';
+              $scope.loading = false;
               return false;
             }
             // continue to call the poller() function every 2 seconds
