@@ -123,13 +123,17 @@ $ psql
 To open the command prompt for postgresql.
 To switch to the dev database.
 ```
-$ \c thought-classifier_dev;
-sid=> \c thoughtclassifier_dev;
-You are now connected to database "thoughtclassifier_dev" as user "sid".
+$ \c textualreviews_dev;
+sid=> \c textualreviews_dev;
+You are now connected to database "textualreviews_dev" as user "sid".
 ```
 To run commands to fetch data
 ```
-$ thoughtclassifier_dev=> select * from user_raw_data;
+$ textualreviews_dev=> select * from user_raw_data;
+```
+To insert a sample data from the terminal of psql.
+```
+$ insert into user_raw_data(text, result, result_without_stopwords) values('This is a sample text', '{"sample key": "sample value"}','{"sample key": "sample value"}');
 ```
 
 ## Installation of redis
