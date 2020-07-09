@@ -39,7 +39,6 @@ def get_sentiment(text):
         )
         db.session.add(result)
         db.session.commit()
-        results['db_id'] = result.id
     except:
         results['errors'] = "Unable to add data to the database"
 
