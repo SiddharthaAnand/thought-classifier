@@ -19,7 +19,11 @@
                 <div class="form-group">
                   <input type="text" ng-model="text" name="text" class="form-control" id="text-box" placeholder="Enter your thoughts..." style="max-width: 300px;">
                 </div>
-                <button type="submit" class="btn btn-default">Submit</button>
+                  <!--raw is added so that the jinja template does not process the submiteButtonText part as some variable.
+                  And it is left for angular to process and replace it with the text from main.js-->
+                {% raw %}
+                <button type="submit" class="btn btn-primary" ng-disabled="loading">{{ submitButtonText }}</button>
+                {% endraw %}
               </form>
               <br>
               {% for error in errors %}
