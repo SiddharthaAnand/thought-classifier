@@ -244,18 +244,59 @@ def find_model_using_gridsearch(parameters_mnb=None, parameters_vect=None, param
     from sklearn.naive_bayes import MultinomialNB
     from sklearn.linear_model import LogisticRegression
     from sklearn.externals import joblib
-    from sklearn.feature_extraction.text import CountVectorizer
+    from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 
     mnb = MultinomialNB()
     logreg = LogisticRegression()
 
+    ####################################################################################
+    #              Taking word count vectorizer as one of the feature vectors          #
+    ####################################################################################
     countvect = CountVectorizer()
     # MultinomialNB
-    best_mnb_countvect = grid_vect(mnb, parameters_mnb, X_train, X_test, parameters_text=parameters_vect, vect=countvect)
+    best_mnb_countvect = grid_vect(mnb,
+                                   parameters_mnb,
+                                   X_train,
+                                   X_test,
+                                   parameters_text=parameters_vect,
+                                   vect=countvect)
     joblib.dump(best_mnb_countvect, 'ml_code/output/best_mnb_countvect.pkl')
     # LogisticRegression
-    best_logreg_countvect = grid_vect(logreg, parameters_logreg, X_train, X_test, parameters_text=parameters_vect, vect=countvect)
+    best_logreg_countvect = grid_vect(logreg,
+                                      parameters_logreg,
+                                      X_train,
+                                      X_test,
+                                      parameters_text=parameters_vect,
+                                      vect=countvect)
     joblib.dump(best_logreg_countvect, 'ml_code/output/best_logreg_countvect.pkl')
+
+    ####################################################################################
+    #                 Taking TF-IDF as one of the feature vectors                      #
+    ####################################################################################
+    # TF-IDF Vector
+    tfidfvect = TfidfVectorizer()
+    # MultinomialNB
+    best_mnb_tfidf = grid_vect(mnb,
+                               parameters_mnb,
+                               X_train,
+                               X_test,
+                               parameters_text=parameters_vect,
+                               vect=tfidfvect)
+    joblib.dump(best_mnb_tfidf, 'ml_code/output/best_mnb_tfidf.pkl')
+    # LogisticRegression
+    best_logreg_tfidf = grid_vect(logreg,
+                                  parameters_mnb,
+                                  X_train,
+                                  X_test,
+                                  parameters_text=parameters_vect,
+                                  vect=tfidfvect)
+    joblib.dump(best_logreg_tfidf, 'ml_code/output/best_logreg_tfidf.pkl')
+
+
+def predict_sentiment(text):
+    model = joblib.load("ml_code/output/best_logreg_countvect.pkl")
+
+    model.predict()
 
 
 if __name__ == '__main__':
