@@ -2,6 +2,9 @@
 Find out the sentiment of your thoughts by simply typing here and clicking
 a button.
 
+Try it out
+[https://thought-classifier-staging.herokuapp.com/](https://thought-classifier-staging.herokuapp.com/)
+
 ## What it does?
 It classifies your thoughts as positive (:)), negative (:() or neutral (:|).
 
