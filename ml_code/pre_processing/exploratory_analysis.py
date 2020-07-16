@@ -13,8 +13,9 @@ Exploratory Analysis of the textual data available for sentiment analysis.
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.externals import joblib
 from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import CountVectorizer
 
 
 def read_and_reindex(filename=None, delimiter=None):
@@ -243,7 +244,6 @@ def find_model_using_gridsearch(parameters_mnb=None, parameters_vect=None, param
     """
     from sklearn.naive_bayes import MultinomialNB
     from sklearn.linear_model import LogisticRegression
-    from sklearn.externals import joblib
     from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 
     mnb = MultinomialNB()
