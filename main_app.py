@@ -54,7 +54,7 @@ def index():
 def analyze_sentiment():
     if request.method == 'POST':
         user_entered_data = json.loads(request.data.decode())
-        print('User enetered data: {}'.format(user_entered_data))
+        print('User entered data: {}'.format(user_entered_data))
         print('Entering method: {}'.format(user_entered_data["text"]))
         job = q.enqueue_call(
             func=get_sentiment,
