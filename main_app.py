@@ -1,4 +1,4 @@
-import sys
+
 import json
 import random
 from rq import Queue
