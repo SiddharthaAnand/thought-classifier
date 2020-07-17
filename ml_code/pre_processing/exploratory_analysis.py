@@ -190,7 +190,7 @@ def grid_vect(clf, parameters_clf, X_train, X_test, parameters_text=None, vect=N
         parameters.update(parameters_text)
     parameters.update(parameters_clf)
 
-    grid_search  = GridSearchCV(pipeline, parameters, n_jobs=-1, verbose=1, cv=5)
+    grid_search = GridSearchCV(pipeline, parameters, n_jobs=-1, verbose=1, cv=5)
     print("Performing grid search...")
     print("pipeline:", [name for name, _ in pipeline.steps])
     print("parameters:")
