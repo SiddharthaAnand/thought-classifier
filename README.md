@@ -28,9 +28,7 @@ $ service postgresql start
 ```
 For further steps to create postgres db, follow the steps at the end.
 Create dev and other environment databases in psql.
-```
-$
-```
+
 For every change that you want to show up in staging/production, you
 need to do a git push to that environment before running heroku commands.
 
