@@ -284,13 +284,13 @@ def find_model_using_gridsearch(parameters_mnb=None, parameters_vect=None, param
                                vect=tfidfvect)
     joblib.dump(best_mnb_tfidf, 'ml_code/output/best_mnb_tfidf.pkl')
     # LogisticRegression
-    best_logreg_tfidf = grid_vect(logreg,
-                                  parameters_mnb,
-                                  X_train,
-                                  X_test,
-                                  parameters_text=parameters_vect,
-                                  vect=tfidfvect)
-    joblib.dump(best_logreg_tfidf, 'ml_code/output/best_logreg_tfidf.pkl')
+    # best_logreg_tfidf = grid_vect(logreg,
+    #                               parameters_mnb,
+    #                               X_train,
+    #                               X_test,
+    #                               parameters_text=parameters_vect,
+    #                               vect=tfidfvect)
+    # joblib.dump(best_logreg_tfidf, 'ml_code/output/best_logreg_tfidf.pkl')
 
 
 def predict_sentiment(text):
