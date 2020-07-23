@@ -16,6 +16,16 @@ import matplotlib.pyplot as plt
 from sklearn.externals import joblib
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer
+from ml_code.pre_processing import column_extractor
+from sklearn.pipeline import FeatureUnion, Pipeline
+from sklearn.metrics import classification_report
+from sklearn.model_selection import GridSearchCV
+from pprint import pprint
+from time import time
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.linear_model import LogisticRegression
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+
 
 
 def read_and_reindex(filename=None, delimiter=None):
@@ -160,12 +170,6 @@ def grid_vect(clf, parameters_clf, X_train, X_test, parameters_text=None, vect=N
     :param is_w2v:
     :return: Results: Accuracy of the model
     """
-    from sklearn.pipeline import FeatureUnion, Pipeline
-    from sklearn.metrics import classification_report
-    from sklearn.model_selection import GridSearchCV
-    from pprint import pprint
-    from time import time
-    from ml_code.pre_processing import column_extractor
     text_count_col = ['count_words']
     SIZE = 50
     if is_w2v:
@@ -242,10 +246,6 @@ def find_model_using_gridsearch(parameters_mnb=None, parameters_vect=None, param
     :param parameters_logreg:
     :return:
     """
-    from sklearn.naive_bayes import MultinomialNB
-    from sklearn.linear_model import LogisticRegression
-    from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-
     mnb = MultinomialNB()
     logreg = LogisticRegression()
 
@@ -274,15 +274,15 @@ def find_model_using_gridsearch(parameters_mnb=None, parameters_vect=None, param
     #                 Taking TF-IDF as one of the feature vectors                      #
     ####################################################################################
     # TF-IDF Vector
-    tfidfvect = TfidfVectorizer()
+    # tfidfvect = TfidfVectorizer()
     # MultinomialNB
-    best_mnb_tfidf = grid_vect(mnb,
-                               parameters_mnb,
-                               X_train,
-                               X_test,
-                               parameters_text=parameters_vect,
-                               vect=tfidfvect)
-    joblib.dump(best_mnb_tfidf, 'ml_code/output/best_mnb_tfidf.pkl')
+    # best_mnb_tfidf = grid_vect(mnb,
+    #                            parameters_mnb,
+    #                            X_train,
+    #                            X_test,
+    #                            parameters_text=parameters_vect,
+    #                            vect=tfidfvect)
+    # joblib.dump(best_mnb_tfidf, 'ml_code/output/best_mnb_tfidf.pkl')
     # LogisticRegression
     # best_logreg_tfidf = grid_vect(logreg,
     #                               parameters_mnb,
@@ -295,7 +295,15 @@ def find_model_using_gridsearch(parameters_mnb=None, parameters_vect=None, param
 
 def predict_sentiment(text):
     model = joblib.load("ml_code/output/best_logreg_countvect.pkl")
-
+    features = FeatureUnion([('textcounts', column_extractor.ColumnExtractor(cols=textcountscols))
+                                , ('pipe', Pipeline([('cleantext', column_extractor.ColumnExtractor(cols='clean_text'))
+                                                        , ('vect', column_extractor.CountVectorizer(max_df=0.5, min_df=1,
+                                                                                   ngram_range=(1, 2)))]))]
+                            , n_jobs=-1)
+    pipeline = Pipeline([
+        ('features', features)
+        , ('clf', LogisticRegression(C=1.0, penalty='l2'))
+    ])
     model.predict()
 
 
