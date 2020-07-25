@@ -295,7 +295,7 @@ def find_model_using_gridsearch(parameters_mnb=None, parameters_vect=None, param
 
 def predict_sentiment(text):
     model = joblib.load("ml_code/output/best_logreg_countvect.pkl")
-    features = FeatureUnion([('textcounts', column_extractor.ColumnExtractor(cols=textcountscols))
+    features = FeatureUnion([('textcounts', column_extractor.ColumnExtractor(cols=text_count))
                                 , ('pipe', Pipeline([('cleantext', column_extractor.ColumnExtractor(cols='clean_text'))
                                                         , ('vect', column_extractor.CountVectorizer(max_df=0.5, min_df=1,
                                                                                    ngram_range=(1, 2)))]))]
