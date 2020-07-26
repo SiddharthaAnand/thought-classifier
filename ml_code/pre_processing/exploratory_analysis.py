@@ -27,7 +27,6 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 
 
-
 def read_and_reindex(filename=None, delimiter=None):
     """
     Read and reindex data to avoid data writing/storage biases.
@@ -155,7 +154,7 @@ def create_test_data(df_eda=None, sr_clean=None):
     df_model['clean_text'] = sr_clean
     df_model.columns.tolist()
     print(df_eda)
-    return train_test_split(df_model.drop('polarity', axis=1), df_model.polarity, test_size=0.1, random_state=37)
+    return train_test_split(df_model.drop('polarity', axis=1), df_model.polarity, test_size=0.1, random_state=37), df_model
 
 
 def grid_vect(clf, parameters_clf, X_train, X_test, parameters_text=None, vect=None, is_w2v=None):
@@ -294,17 +293,20 @@ def find_model_using_gridsearch(parameters_mnb=None, parameters_vect=None, param
 
 
 def predict_sentiment(text):
-    model = joblib.load("ml_code/output/best_logreg_countvect.pkl")
-    features = FeatureUnion([('textcounts', column_extractor.ColumnExtractor(cols=text_count))
-                                , ('pipe', Pipeline([('cleantext', column_extractor.ColumnExtractor(cols='clean_text'))
-                                                        , ('vect', column_extractor.CountVectorizer(max_df=0.5, min_df=1,
-                                                                                   ngram_range=(1, 2)))]))]
+    features = FeatureUnion([('textcounts', column_extractor.ColumnExtractor(cols='count_words')),
+                             ('pipe', Pipeline([('cleantext', column_extractor.ColumnExtractor(cols='clean_text')),
+                                                ('vect', column_extractor.CountVectorizer(max_df=0.5, min_df=1,
+                                                                                            ngram_range=(1, 2))
+                                                 )
+                                                ])
+                              )]
                             , n_jobs=-1)
     pipeline = Pipeline([
-        ('features', features)
-        , ('clf', LogisticRegression(C=1.0, penalty='l2'))
-    ])
-    model.predict()
+                        ('features', features),
+                        ('clf', LogisticRegression(C=1.0, penalty='l2'))
+                ])
+    best_model = pipeline.fit()
+    # model.predict()
 
 
 if __name__ == '__main__':
@@ -353,7 +355,7 @@ if __name__ == '__main__':
     #########################################################################
     #                     CREATE TRAIN TEST DATA                            #
     #########################################################################
-    X_train, X_test, y_train, y_test = create_test_data(word_count_frame, cleaned_review)
+    X_train, X_test, y_train, y_test, df_model = create_test_data(word_count_frame, cleaned_review)
 
     #########################################################################
     #                    FIND CLASSIFIER AND MODEL                          #
@@ -362,6 +364,7 @@ if __name__ == '__main__':
     #             MULTINOMIAL NAIVE BAYES && LOGISTIC REGRESSION            #
     #########################################################################
     parameters_mnb, parameters_vect, parameters_logreg = seed_model_before_start(X_train=X_train, X_test=X_test)
-    find_model_using_gridsearch(parameters_mnb=parameters_mnb,
-                                parameters_vect=parameters_vect,
-                                parameters_logreg=parameters_logreg)
+    # find_model_using_gridsearch(parameters_mnb=parameters_mnb,
+    #                             parameters_vect=parameters_vect,
+    #                             parameters_logreg=parameters_logreg)
+    predict_sentiment("I am feeling great!", df_model)
