@@ -10,12 +10,13 @@ Exploratory Analysis of the textual data available for sentiment analysis.
 ##      Generate a model
 ##      Pickle/serialize the model
 """
+import sys
+sys.path.insert(0, '/home/sid/github/thought-classifier/')
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.externals import joblib
 from sklearn.model_selection import train_test_split
-from sklearn.feature_extraction.text import CountVectorizer
 from ml_code.pre_processing import column_extractor
 from sklearn.pipeline import FeatureUnion, Pipeline
 from sklearn.metrics import classification_report
@@ -25,8 +26,11 @@ from time import time
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.linear_model import LogisticRegression
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+from ml_code.pre_processing import clean_text
 
 
+
+df_model = None
 def read_and_reindex(filename=None, delimiter=None):
     """
     Read and reindex data to avoid data writing/storage biases.
@@ -102,7 +106,6 @@ def text_cleaner(df=None):
     :param df:
     :return:
     """
-    from ml_code.pre_processing import clean_text
     ctext = clean_text.CleanText()
     clean_review = ctext.fit_transform(df.text)
     # Get some random sample to see how the processed text looks like!
@@ -150,11 +153,12 @@ def create_test_data(df_eda=None, sr_clean=None):
     :param sr_clean: Another data frame which consists of the cleaned values for every review
     :return: training and testing split data
     """
+    global df_model
     df_model = df_eda
     df_model['clean_text'] = sr_clean
     df_model.columns.tolist()
     print(df_eda)
-    return train_test_split(df_model.drop('polarity', axis=1), df_model.polarity, test_size=0.1, random_state=37), df_model
+    return train_test_split(df_model.drop('polarity', axis=1), df_model.polarity, test_size=0.1, random_state=37)
 
 
 def grid_vect(clf, parameters_clf, X_train, X_test, parameters_text=None, vect=None, is_w2v=None):
@@ -295,7 +299,7 @@ def find_model_using_gridsearch(parameters_mnb=None, parameters_vect=None, param
 def predict_sentiment(text):
     features = FeatureUnion([('textcounts', column_extractor.ColumnExtractor(cols='count_words')),
                              ('pipe', Pipeline([('cleantext', column_extractor.ColumnExtractor(cols='clean_text')),
-                                                ('vect', column_extractor.CountVectorizer(max_df=0.5, min_df=1,
+                                                ('vect', CountVectorizer(max_df=0.5, min_df=1,
                                                                                             ngram_range=(1, 2))
                                                  )
                                                 ])
@@ -305,8 +309,18 @@ def predict_sentiment(text):
                         ('features', features),
                         ('clf', LogisticRegression(C=1.0, penalty='l2'))
                 ])
-    best_model = pipeline.fit()
-    # model.predict()
+    best_model = pipeline.fit(df_model.drop('polarity', axis=1), df_model.polarity)
+    import pandas as pd
+    new_positive_tweets = pd.Series(["Thank you @VirginAmerica for you amazing customer support team on Tuesday 11/28 at @EWRairport and returning my lost bag in less than 24h! #efficiencyiskey #virginamerica"])
+
+    tc = text_count.TextCount()
+    ct = clean_text.CleanText()
+    df_counts_pos =tc.transform(new_positive_tweets)
+    df_clean_pos = ct.transform(new_positive_tweets)
+    df_model_pos = df_counts_pos
+    df_model_pos['clean_text'] = df_clean_pos
+    best_model.predict(df_model_pos).tolist()
+
 
 
 if __name__ == '__main__':
@@ -319,8 +333,6 @@ if __name__ == '__main__':
     __name__ is equal to __main__ only for the module which is run, 
     not for the ones which are imported.
     """
-    import sys
-    sys.path.insert(0, '/home/sid/github/thought-classifier/')
 
     from ml_code.file_reader import tsv_file_reader
     from ml_code.pre_processing import text_count
@@ -355,7 +367,7 @@ if __name__ == '__main__':
     #########################################################################
     #                     CREATE TRAIN TEST DATA                            #
     #########################################################################
-    X_train, X_test, y_train, y_test, df_model = create_test_data(word_count_frame, cleaned_review)
+    X_train, X_test, y_train, y_test = create_test_data(word_count_frame, cleaned_review)
 
     #########################################################################
     #                    FIND CLASSIFIER AND MODEL                          #
@@ -367,4 +379,4 @@ if __name__ == '__main__':
     # find_model_using_gridsearch(parameters_mnb=parameters_mnb,
     #                             parameters_vect=parameters_vect,
     #                             parameters_logreg=parameters_logreg)
-    predict_sentiment("I am feeling great!", df_model)
+    predict_sentiment("I am feeling great!")
