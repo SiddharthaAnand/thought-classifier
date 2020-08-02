@@ -28,6 +28,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from ml_code.pre_processing import clean_text
 
+from ml_code.file_reader import tsv_file_reader
+from ml_code.pre_processing import text_count
 
 
 df_model = None
@@ -297,6 +299,7 @@ def find_model_using_gridsearch(parameters_mnb=None, parameters_vect=None, param
 
 
 def predict_sentiment(text):
+    global df_model
     features = FeatureUnion([('textcounts', column_extractor.ColumnExtractor(cols='count_words')),
                              ('pipe', Pipeline([('cleantext', column_extractor.ColumnExtractor(cols='clean_text')),
                                                 ('vect', CountVectorizer(max_df=0.5, min_df=1,
@@ -309,7 +312,7 @@ def predict_sentiment(text):
                         ('features', features),
                         ('clf', LogisticRegression(C=1.0, penalty='l2'))
                 ])
-    best_model = pipeline.fit(df_model.drop('polarity', axis=1), df_model.polarity)
+    best_model = pipeline.fit(df_model)
     import pandas as pd
     new_positive_tweets = pd.Series(["Thank you @VirginAmerica for you amazing customer support team on Tuesday 11/28 at @EWRairport and returning my lost bag in less than 24h! #efficiencyiskey #virginamerica"])
 
@@ -320,7 +323,6 @@ def predict_sentiment(text):
     df_model_pos = df_counts_pos
     df_model_pos['clean_text'] = df_clean_pos
     best_model.predict(df_model_pos).tolist()
-
 
 
 if __name__ == '__main__':
@@ -334,9 +336,6 @@ if __name__ == '__main__':
     not for the ones which are imported.
     """
 
-    from ml_code.file_reader import tsv_file_reader
-    from ml_code.pre_processing import text_count
-
     #########################################################################
     #                  REVIEW FILE DATA - IMDB ONLY                         #
     #########################################################################
@@ -345,7 +344,7 @@ if __name__ == '__main__':
     #########################################################################
     #             READ AND REINDEX TO AVOID DATA COLLECTION BIAS            #
     #########################################################################
-    reindexed_data = read_and_reindex(filename=filename, delimiter=delimiter)
+    # reindexed_data = read_and_reindex(filename=filename, delimiter=delimiter)
     #########################################################################
     #                          PRE-PROCESSING STEPS                         #
     #                            ANALYZE RAW DATA                           #
@@ -354,12 +353,12 @@ if __name__ == '__main__':
     # 2. word_count_frame = clean_up_data(reindexed_data)
     # 3. visualize_word_count_and_polarity(word_count_frame)
     # show_distribution(word_count_frame, 'count_words')
-    word_count_frame = clean_up_data(reindexed_data)
+    # word_count_frame = clean_up_data(reindexed_data)
     #########################################################################
     #                            CLEAN DATA                                 #
     #########################################################################
-    cleaned_review = text_cleaner(reindexed_data)
-    cleaned_review = fill_empty_reviews_with_no_text(cleaned_review=cleaned_review, filler_text="[no_review_here]")
+    # cleaned_review = text_cleaner(reindexed_data)
+    # cleaned_review = fill_empty_reviews_with_no_text(cleaned_review=cleaned_review, filler_text="[no_review_here]")
     #########################################################################
     #                       WORD COUNT IN REVIEW                            #
     #########################################################################
@@ -367,7 +366,7 @@ if __name__ == '__main__':
     #########################################################################
     #                     CREATE TRAIN TEST DATA                            #
     #########################################################################
-    X_train, X_test, y_train, y_test = create_test_data(word_count_frame, cleaned_review)
+    # X_train, X_test, y_train, y_test = create_test_data(word_count_frame, cleaned_review)
 
     #########################################################################
     #                    FIND CLASSIFIER AND MODEL                          #
@@ -375,7 +374,7 @@ if __name__ == '__main__':
     #                       GRID SEARCH THE MODEL                           #
     #             MULTINOMIAL NAIVE BAYES && LOGISTIC REGRESSION            #
     #########################################################################
-    parameters_mnb, parameters_vect, parameters_logreg = seed_model_before_start(X_train=X_train, X_test=X_test)
+    # parameters_mnb, parameters_vect, parameters_logreg = seed_model_before_start(X_train=X_train, X_test=X_test)
     # find_model_using_gridsearch(parameters_mnb=parameters_mnb,
     #                             parameters_vect=parameters_vect,
     #                             parameters_logreg=parameters_logreg)

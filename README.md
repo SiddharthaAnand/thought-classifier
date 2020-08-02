@@ -177,6 +177,7 @@ If it is, then you are ready to push the changes to staging/production.
 
 
 ##### Troubleshooting for postgres
+
 *Error 1*
 ```
 $ psql
