@@ -8,7 +8,7 @@ from os import urandom, environ
 from flask import Flask, render_template, request, jsonify
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
-
+from ml_code import class_predictor
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = urandom(32)
@@ -23,13 +23,13 @@ Bootstrap(app)
 
 
 def get_sentiment(text):
-    sentiment = ['Worse', 'Bad', 'an Average', 'Good', 'an Impressive', 'an Awesome']
+    sentiment = ['Bad', 'an Awesome']
     # TODO
     # Do your logic with the text
     # Send this to the model
     # Get result
     results = {
-        'sentiment': sentiment[random.randint(0, len(sentiment) - 1)]
+        'sentiment': sentiment[class_predictor.read_model_and_predict(text=text)[0]]
     }
     try:
         result = Result(
