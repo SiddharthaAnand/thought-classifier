@@ -328,6 +328,26 @@ def predict_sentiment(best_mnb_countvect, text):
     print("Predicting...")
     print(best_model.predict(df_model_pos).tolist())
 
+def read_model_and_predict():
+    import pandas as pd
+    new_positive_tweets = pd.Series([
+                                        "TThank you @VirginAmerica for you amazing customer support team on Tuesday 11/28 at @EWRairport and returning my lost bag in less than 24h! #efficiencyiskey #virginamerica"
+                                        ,
+                                        "Love flying with you guys ask these years. Sad that this will be the last trip 😂 @VirginAmerica #LuxuryTravel"
+                                        ,
+                                        "Wow @VirginAmerica main cabin select is the way to fly!! This plane is nice and clean & I have tons of legroom! Wahoo! NYC bound! ✈️",
+                                        "This service is shit. I hate it."])
+    import pickle
+    loaded_model = joblib.load('ml_code/output/best_logreg_countvect.pkl')
+    tc = text_count.TextCount()
+    ct = clean_text.CleanText()
+    df_counts_pos = tc.transform(new_positive_tweets)
+    df_clean_pos = ct.transform(new_positive_tweets)
+    df_model_pos = df_counts_pos
+    df_model_pos['clean_text'] = df_clean_pos
+    print("Predicting...")
+    print(loaded_model.predict(df_model_pos).tolist())
+
 
 if __name__ == '__main__':
     """
@@ -348,29 +368,29 @@ if __name__ == '__main__':
     #########################################################################
     #             READ AND REINDEX TO AVOID DATA COLLECTION BIAS            #
     #########################################################################
-    reindexed_data = read_and_reindex(filename=filename, delimiter=delimiter)
+    # reindexed_data = read_and_reindex(filename=filename, delimiter=delimiter)
     #########################################################################
     #                          PRE-PROCESSING STEPS                         #
     #                            ANALYZE RAW DATA                           #
     #########################################################################
     # 1. visualize_target_class_frequency(reindexed_data)
-    word_count_frame = clean_up_data(reindexed_data)
+    # word_count_frame = clean_up_data(reindexed_data)
     # 3. visualize_word_count_and_polarity(word_count_frame)
-    show_distribution(word_count_frame, 'count_words')
-    word_count_frame = clean_up_data(reindexed_data)
+    # show_distribution(word_count_frame, 'count_words')
+    # word_count_frame = clean_up_data(reindexed_data)
     #########################################################################
     #                            CLEAN DATA                                 #
     #########################################################################
-    cleaned_review = text_cleaner(reindexed_data)
-    cleaned_review = fill_empty_reviews_with_no_text(cleaned_review=cleaned_review, filler_text="[no_review_here]")
+    # cleaned_review = text_cleaner(reindexed_data)
+    # cleaned_review = fill_empty_reviews_with_no_text(cleaned_review=cleaned_review, filler_text="[no_review_here]")
     #########################################################################
     #                       WORD COUNT IN REVIEW                            #
     #########################################################################
-    analyse_count_vectorizer_feature(cleaned_review)
+    # analyse_count_vectorizer_feature(cleaned_review)
     #########################################################################
     #                     CREATE TRAIN TEST DATA                            #
     #########################################################################
-    X_train, X_test, y_train, y_test = create_test_data(word_count_frame, cleaned_review)
+    # X_train, X_test, y_train, y_test = create_test_data(word_count_frame, cleaned_review)
 
     #########################################################################
     #                    FIND CLASSIFIER AND MODEL                          #
@@ -378,8 +398,9 @@ if __name__ == '__main__':
     #                       GRID SEARCH THE MODEL                           #
     #             MULTINOMIAL NAIVE BAYES && LOGISTIC REGRESSION            #
     #########################################################################
-    parameters_mnb, parameters_vect, parameters_logreg = seed_model_before_start()
-    best_mnb_countvect = find_model_using_gridsearch(parameters_mnb=parameters_mnb,
-                                parameters_vect=parameters_vect,
-                                parameters_logreg=parameters_logreg)
-    predict_sentiment(best_mnb_countvect, "I am feeling great!")
+    # parameters_mnb, parameters_vect, parameters_logreg = seed_model_before_start()
+    # best_mnb_countvect = find_model_using_gridsearch(parameters_mnb=parameters_mnb,
+    #                             parameters_vect=parameters_vect,
+    #                             parameters_logreg=parameters_logreg)
+    # predict_sentiment(best_mnb_countvect, "I am feeling great!")
+    read_model_and_predict()
