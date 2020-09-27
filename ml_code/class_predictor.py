@@ -4,6 +4,7 @@ from sklearn.externals import joblib
 from ml_code.pre_processing import clean_text
 from ml_code.pre_processing import text_count
 
+
 def read_model_and_predict(text):
     """
     This method reads the already defined model from the output/ directory using joblib.
