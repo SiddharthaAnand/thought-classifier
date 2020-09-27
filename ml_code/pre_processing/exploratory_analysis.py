@@ -27,9 +27,9 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.linear_model import LogisticRegression
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from ml_code.pre_processing import clean_text
-
-from ml_code.file_reader import tsv_file_reader
 from ml_code.pre_processing import text_count
+from ml_code.file_reader import tsv_file_reader
+
 
 
 df_model = None
@@ -299,7 +299,7 @@ def find_model_using_gridsearch(parameters_mnb=None, parameters_vect=None, param
     # joblib.dump(best_logreg_tfidf, 'ml_code/output/best_logreg_tfidf.pkl')
 
 
-def predict_sentiment(best_mnb_countvect, text):
+def predict_sentiment(text=None):
     """
     This method creates a model using logistic regression with some defined parameters using a gridsearch method
     to find the best possible parameters.
@@ -324,9 +324,7 @@ def predict_sentiment(best_mnb_countvect, text):
                 ])
     best_model = pipeline.fit(df_model.drop('polarity', axis=1), df_model.polarity)
     import pandas as pd
-    new_positive_tweets = pd.Series(["TThank you @VirginAmerica for you amazing customer support team on Tuesday 11/28 at @EWRairport and returning my lost bag in less than 24h! #efficiencyiskey #virginamerica"
-,"Love flying with you guys ask these years. Sad that this will be the last trip 😂 @VirginAmerica #LuxuryTravel"
-,"Wow @VirginAmerica main cabin select is the way to fly!! This plane is nice and clean & I have tons of legroom! Wahoo! NYC bound! ✈️", "This service is shit. I hate it."])
+    new_positive_tweets = pd.Series(text)
 
     tc = text_count.TextCount()
     ct = clean_text.CleanText()
@@ -337,31 +335,6 @@ def predict_sentiment(best_mnb_countvect, text):
     joblib.dump(best_model, 'ml_code/output/best_logreg_final_model.pkl')
     print("Predicting...")
     print(best_model.predict(df_model_pos).tolist())
-
-def read_model_and_predict():
-    """
-    This method reads the already defined model from the output/ directory using joblib.
-    Uses it to predict the text polarity.
-    :return: None
-    """
-    import pandas as pd
-    new_positive_tweets = pd.Series([
-                                        "TThank you @VirginAmerica for you amazing customer support team on Tuesday 11/28 at @EWRairport and returning my lost bag in less than 24h! #efficiencyiskey #virginamerica"
-                                        ,
-                                        "Love flying with you guys ask these years. Sad that this will be the last trip 😂 @VirginAmerica #LuxuryTravel"
-                                        ,
-                                        "Wow @VirginAmerica main cabin select is the way to fly!! This plane is nice and clean & I have tons of legroom! Wahoo! NYC bound! ✈️",
-                                        "This service is shit. I hate it."])
-    import pickle
-    loaded_model = joblib.load('ml_code/output/best_logreg_final_model.pkl')
-    tc = text_count.TextCount()
-    ct = clean_text.CleanText()
-    df_counts_pos = tc.transform(new_positive_tweets)
-    df_clean_pos = ct.transform(new_positive_tweets)
-    df_model_pos = df_counts_pos
-    df_model_pos['clean_text'] = df_clean_pos
-    print("Predicting from the loaded pickled model...")
-    print(loaded_model.predict(df_model_pos).tolist())
 
 
 if __name__ == '__main__':
@@ -418,5 +391,8 @@ if __name__ == '__main__':
                                                      parameters_vect=parameters_vect,
                                                      parameters_logreg=parameters_logreg,
                                                      data={'X_train': X_train, 'X_test': X_test})
-    predict_sentiment(best_mnb_countvect, "I am feeling great!")
-    read_model_and_predict()
+    text = ["TThank you @VirginAmerica for you amazing customer support team on Tuesday 11/28 at @EWRairport and returning my lost bag in less than 24h! #efficiencyiskey #virginamerica",
+            "Love flying with you guys ask these years. Sad that this will be the last trip 😂 @VirginAmerica #LuxuryTravel",
+            "Wow @VirginAmerica main cabin select is the way to fly!! This plane is nice and clean & I have tons of legroom! Wahoo! NYC bound! ✈️",
+            "This service is shit. I hate it."]
+    predict_sentiment(text)
