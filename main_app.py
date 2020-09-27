@@ -76,5 +76,5 @@ def get_results(job_id):
 
 
 if __name__ == '__main__':
-    app.config.from_object('development_config.DevelopmentConfig')
+    app.config.from_object('production_config.ProductionConfig')
     app.run()
