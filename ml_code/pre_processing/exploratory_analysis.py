@@ -224,7 +224,7 @@ def grid_vect(clf, parameters_clf, X_train, X_test, parameters_text=None, vect=N
     return grid_search
 
 
-def seed_model_before_start(X_train=None, X_test=None):
+def seed_model_before_start():
     # Parameter grid settings for the vectorizers (Count and TFIDF)
     parameters_vect = {
         'features__pipe__vect__max_df': (0.25, 0.5, 0.75),
@@ -252,20 +252,20 @@ def find_model_using_gridsearch(parameters_mnb=None, parameters_vect=None, param
     :return:
     """
     mnb = MultinomialNB()
-    logreg = LogisticRegression()
+    logreg = LogisticRegression(C=1, penalty='l1', solver='liblinear', dual=False)
 
     ####################################################################################
     #              Taking word count vectorizer as one of the feature vectors          #
     ####################################################################################
     countvect = CountVectorizer()
     # MultinomialNB
-    best_mnb_countvect = grid_vect(mnb,
-                                   parameters_mnb,
-                                   X_train,
-                                   X_test,
-                                   parameters_text=parameters_vect,
-                                   vect=countvect)
-    joblib.dump(best_mnb_countvect, 'ml_code/output/best_mnb_countvect.pkl')
+    # best_mnb_countvect = grid_vect(mnb,
+    #                                parameters_mnb,
+    #                                X_train,
+    #                                X_test,
+    #                                parameters_text=parameters_vect,
+    #                                vect=countvect)
+    # joblib.dump(best_mnb_countvect, 'ml_code/output/best_mnb_countvect.pkl')
     # LogisticRegression
     best_logreg_countvect = grid_vect(logreg,
                                       parameters_logreg,
@@ -274,6 +274,7 @@ def find_model_using_gridsearch(parameters_mnb=None, parameters_vect=None, param
                                       parameters_text=parameters_vect,
                                       vect=countvect)
     joblib.dump(best_logreg_countvect, 'ml_code/output/best_logreg_countvect.pkl')
+    return best_logreg_countvect
 
     ####################################################################################
     #                 Taking TF-IDF as one of the feature vectors                      #
@@ -298,23 +299,25 @@ def find_model_using_gridsearch(parameters_mnb=None, parameters_vect=None, param
     # joblib.dump(best_logreg_tfidf, 'ml_code/output/best_logreg_tfidf.pkl')
 
 
-def predict_sentiment(text):
+def predict_sentiment(best_mnb_countvect, text):
     global df_model
-    features = FeatureUnion([('textcounts', column_extractor.ColumnExtractor(cols='count_words')),
-                             ('pipe', Pipeline([('cleantext', column_extractor.ColumnExtractor(cols='clean_text')),
-                                                ('vect', CountVectorizer(max_df=0.5, min_df=1,
-                                                                                            ngram_range=(1, 2))
-                                                 )
-                                                ])
-                              )]
+    # word_count_frame = clean_up_data(text)
+    textcountscols = ['count_words']
+    # w2v_cols = 2
+    features = FeatureUnion([('textcounts', column_extractor.ColumnExtractor(cols=textcountscols))
+                                , ('pipe', Pipeline([('cleantext', column_extractor.ColumnExtractor(cols='clean_text'))
+                                                        , ('vect', CountVectorizer(max_df=0.5, min_df=1,
+                                                                                   ngram_range=(1, 2)))]))]
                             , n_jobs=-1)
     pipeline = Pipeline([
                         ('features', features),
-                        ('clf', LogisticRegression(C=1.0, penalty='l2'))
+                        ('clf', LogisticRegression(C=1.0, penalty='l1', solver='liblinear', dual=False))
                 ])
-    best_model = pipeline.fit(df_model)
+    best_model = pipeline.fit(df_model.drop('polarity', axis=1), df_model.polarity)
     import pandas as pd
-    new_positive_tweets = pd.Series(["Thank you @VirginAmerica for you amazing customer support team on Tuesday 11/28 at @EWRairport and returning my lost bag in less than 24h! #efficiencyiskey #virginamerica"])
+    new_positive_tweets = pd.Series(["TThank you @VirginAmerica for you amazing customer support team on Tuesday 11/28 at @EWRairport and returning my lost bag in less than 24h! #efficiencyiskey #virginamerica"
+,"Love flying with you guys ask these years. Sad that this will be the last trip 😂 @VirginAmerica #LuxuryTravel"
+,"Wow @VirginAmerica main cabin select is the way to fly!! This plane is nice and clean & I have tons of legroom! Wahoo! NYC bound! ✈️", "This service is shit. I hate it."])
 
     tc = text_count.TextCount()
     ct = clean_text.CleanText()
@@ -322,7 +325,8 @@ def predict_sentiment(text):
     df_clean_pos = ct.transform(new_positive_tweets)
     df_model_pos = df_counts_pos
     df_model_pos['clean_text'] = df_clean_pos
-    best_model.predict(df_model_pos).tolist()
+    print("Predicting...")
+    print(best_model.predict(df_model_pos).tolist())
 
 
 if __name__ == '__main__':
@@ -344,29 +348,29 @@ if __name__ == '__main__':
     #########################################################################
     #             READ AND REINDEX TO AVOID DATA COLLECTION BIAS            #
     #########################################################################
-    # reindexed_data = read_and_reindex(filename=filename, delimiter=delimiter)
+    reindexed_data = read_and_reindex(filename=filename, delimiter=delimiter)
     #########################################################################
     #                          PRE-PROCESSING STEPS                         #
     #                            ANALYZE RAW DATA                           #
     #########################################################################
     # 1. visualize_target_class_frequency(reindexed_data)
-    # 2. word_count_frame = clean_up_data(reindexed_data)
+    word_count_frame = clean_up_data(reindexed_data)
     # 3. visualize_word_count_and_polarity(word_count_frame)
-    # show_distribution(word_count_frame, 'count_words')
-    # word_count_frame = clean_up_data(reindexed_data)
+    show_distribution(word_count_frame, 'count_words')
+    word_count_frame = clean_up_data(reindexed_data)
     #########################################################################
     #                            CLEAN DATA                                 #
     #########################################################################
-    # cleaned_review = text_cleaner(reindexed_data)
-    # cleaned_review = fill_empty_reviews_with_no_text(cleaned_review=cleaned_review, filler_text="[no_review_here]")
+    cleaned_review = text_cleaner(reindexed_data)
+    cleaned_review = fill_empty_reviews_with_no_text(cleaned_review=cleaned_review, filler_text="[no_review_here]")
     #########################################################################
     #                       WORD COUNT IN REVIEW                            #
     #########################################################################
-    # analyse_count_vectorizer_feature(cleaned_review)
+    analyse_count_vectorizer_feature(cleaned_review)
     #########################################################################
     #                     CREATE TRAIN TEST DATA                            #
     #########################################################################
-    # X_train, X_test, y_train, y_test = create_test_data(word_count_frame, cleaned_review)
+    X_train, X_test, y_train, y_test = create_test_data(word_count_frame, cleaned_review)
 
     #########################################################################
     #                    FIND CLASSIFIER AND MODEL                          #
@@ -374,8 +378,8 @@ if __name__ == '__main__':
     #                       GRID SEARCH THE MODEL                           #
     #             MULTINOMIAL NAIVE BAYES && LOGISTIC REGRESSION            #
     #########################################################################
-    # parameters_mnb, parameters_vect, parameters_logreg = seed_model_before_start(X_train=X_train, X_test=X_test)
-    # find_model_using_gridsearch(parameters_mnb=parameters_mnb,
-    #                             parameters_vect=parameters_vect,
-    #                             parameters_logreg=parameters_logreg)
-    predict_sentiment("I am feeling great!")
+    parameters_mnb, parameters_vect, parameters_logreg = seed_model_before_start()
+    best_mnb_countvect = find_model_using_gridsearch(parameters_mnb=parameters_mnb,
+                                parameters_vect=parameters_vect,
+                                parameters_logreg=parameters_logreg)
+    predict_sentiment(best_mnb_countvect, "I am feeling great!")
