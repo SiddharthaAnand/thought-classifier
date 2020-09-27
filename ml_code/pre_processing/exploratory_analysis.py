@@ -300,6 +300,15 @@ def find_model_using_gridsearch(parameters_mnb=None, parameters_vect=None, param
 
 
 def predict_sentiment(best_mnb_countvect, text):
+    """
+    This method creates a model using logistic regression with some defined parameters using a gridsearch method
+    to find the best possible parameters.
+    It predicts the sentiment at runtime after that.
+    It serializes the model into a file using joblib.
+    :param best_mnb_countvect:
+    :param text:
+    :return: None
+    """
     global df_model
     # word_count_frame = clean_up_data(text)
     textcountscols = ['count_words']
@@ -330,6 +339,11 @@ def predict_sentiment(best_mnb_countvect, text):
     print(best_model.predict(df_model_pos).tolist())
 
 def read_model_and_predict():
+    """
+    This method reads the already defined model from the output/ directory using joblib.
+    Uses it to predict the text polarity.
+    :return: None
+    """
     import pandas as pd
     new_positive_tweets = pd.Series([
                                         "TThank you @VirginAmerica for you amazing customer support team on Tuesday 11/28 at @EWRairport and returning my lost bag in less than 24h! #efficiencyiskey #virginamerica"
