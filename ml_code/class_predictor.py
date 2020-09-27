@@ -13,7 +13,6 @@ def read_model_and_predict(text):
     """
     import pandas as pd
     new_positive_tweets = pd.Series(text)
-    import pickle
     loaded_model = joblib.load('ml_code/output/best_logreg_final_model.pkl')
     tc = text_count.TextCount()
     ct = clean_text.CleanText()
@@ -22,8 +21,8 @@ def read_model_and_predict(text):
     df_model_pos = df_counts_pos
     df_model_pos['clean_text'] = df_clean_pos
     print("Predicting from the loaded pickled model...")
-    print(loaded_model.predict(df_model_pos).tolist())
-
+    # print(loaded_model.predict(df_model_pos).tolist())
+    return loaded_model.predict(df_model_pos).tolist()
 
 if __name__ == '__main__':
     text = ["TThank you @VirginAmerica for you amazing customer support team on Tuesday 11/28 at @EWRairport and returning my lost bag in less than 24h! #efficiencyiskey #virginamerica",
