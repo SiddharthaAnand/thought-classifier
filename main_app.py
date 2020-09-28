@@ -1,6 +1,7 @@
 
 import json
-import random
+import nltk
+nltk.download('stopwords')
 from rq import Queue
 from rq.job import Job
 from workers.worker import conn
