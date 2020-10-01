@@ -21,6 +21,7 @@ def read_model_and_predict(text):
     df_model_pos['clean_text'] = df_clean_pos
     print("Predicting from the loaded pickled model...")
     # print(loaded_model.predict(df_model_pos).tolist())
+    del loaded_model
     return loaded_model.predict(df_model_pos).tolist()
 
 if __name__ == '__main__':
