@@ -14,24 +14,25 @@
   <div class="bg">
     <div class="container">
         <div class="row">
-                <div class="col-md-12" align="center">
-                  <h1>Gauge your mood by typing in your thoughts</h1>
-                  <br>
+          <div class="col-md-12" align="center">
+            <h1>Gauge your mood by typing in your thoughts</h1>
+            <br>
 
-                  <form role="form" ng-submit="getResults()">
-                    <!--<div class="form-group">-->
-                      <input type="text" ng-model="text" name="text" class="form-control" id="text-box" placeholder="Enter your thoughts..." style="max-width: 300px;">
-                    <!--</div>-->
-                      <!--raw is added so that the jinja template does not process the submiteButtonText part as some variable.
-                      And it is left for angular to process and replace it with the text from main.js-->
-                    {% raw %}
-                    <button type="submit" class="btn btn-primary" ng-disabled="loading">{{ submitButtonText }}</button>
-                    {% endraw %}
-                  </form>
-                </div>
+            <form role="form" ng-submit="getResults()">
+              <!--<div class="form-group">-->
+                <input type="text" ng-model="text" name="text" class="form-control" id="text-box" placeholder="I am feeling..." style="max-width: 900px;">
+              <!--</div>-->
+                <!--raw is added so that the jinja template does not process the submiteButtonText part as some variable.
+                And it is left for angular to process and replace it with the text from main.js-->
+              <br>
+              {% raw %}
+              <button type="submit" class="btn btn-primary" ng-disabled="loading">{{ submitButtonText }}</button>
+              {% endraw %}
+            </form>
+          </div>
         </div>
         <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-3" align="center">
                   {% raw %}
                   <div id="results">
                       <span ng-repeat="key in results">
