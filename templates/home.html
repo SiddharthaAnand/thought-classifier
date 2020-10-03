@@ -14,21 +14,22 @@
   <div class="bg">
     <div class="container">
         <div class="row">
-          <div class="col-md-12" align="center">
-            <h1>Gauge your mood by typing in your thoughts</h1>
-            <br>
-
-            <form role="form" ng-submit="getResults()">
-              <!--<div class="form-group">-->
-                <input type="text" ng-model="text" name="text" class="form-control" id="text-box" placeholder="I am feeling..." style="max-width: 900px;">
-              <!--</div>-->
-                <!--raw is added so that the jinja template does not process the submiteButtonText part as some variable.
-                And it is left for angular to process and replace it with the text from main.js-->
-              <br>
-              {% raw %}
-              <button type="submit" class="btn btn-primary" ng-disabled="loading">{{ submitButtonText }}</button>
+          <div class="col-sm-10 offset-sm-1 text-center">
+            <mat-form-field>
+                <h1 class="text-white">Gauge your mood by typing in your thoughts</h1>
+                <br>
+                <form role="form" ng-submit="getResults()">
+                  <!--<div class="form-group">-->
+                    <input type="text" ng-model="text" name="text" class="form-control" id="text-box" placeholder="I am feeling..." style="max-width: 900px;">
+                  <!--</div>-->
+                    <!--raw is added so that the jinja template does not process the submiteButtonText part as some variable.
+                    And it is left for angular to process and replace it with the text from main.js-->
+                  <br>
+                  {% raw %}
+                  <button type="submit" class="btn btn-primary" ng-disabled="loading">{{ submitButtonText }}</button>
               {% endraw %}
-            </form>
+                </form>
+            </mat-form-field>
           </div>
         </div>
         <div class="row">
