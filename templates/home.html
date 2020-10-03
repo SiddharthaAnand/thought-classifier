@@ -1,102 +1,54 @@
-<!DOCTYPE html>
-<html lang="en">
+<html ng-app="ThoughtAnalyzerApp">
   <head>
-    <title>Find out what your thoughts say about you. It's fun!</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <title>Thought Analyzer Machine</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}" />
     <style>
-      body, html {
-        height: 100%;
-        font-family: Arial, Helvetica, sans-serif;
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      .bg-img {
-        /* The image used */
-        background-image: url("contemplate-monkey-bg.jpg");
-
-        min-height: 380px;
-
-        /* Center and scale the image nicely */
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: cover;
-        position: relative;
-      }
-
-      /* Add styles to the form container */
       .container {
-        position: absolute;
-        right: 0;
-        margin: 20px;
-        max-width: 300px;
-        padding: 16px;
-        background-color: rgba(248, 247, 216, 0.1);
-      }
-
-      /* Full-width input fields */
-      input[type=text], input[type=password] {
-        width: 100%;
-        padding: 15px;
-        margin: 5px 0 22px 0;
-        border: none;
-        background: #f1f1f1;
-      }
-
-      input[type=text]:focus, input[type=password]:focus {
-        background-color: #ddd;
-        outline: none;
-      }
-
-      /* Set a style for the submit button */
-      .btn {
-        background-color: #4CAF50;
-        color: white;
-        padding: 16px 20px;
-        border: none;
-        cursor: pointer;
-        width: 100%;
-        opacity: 0.9;
-      }
-
-      .btn:hover {
-        opacity: 1;
+        max-width: 1000px;
       }
     </style>
   </head>
-
-
-<body>
-
-<div class="jumbotron text-center" style="margin-bottom:0">
-  <h1>Type in your Thoughts</h1>
-  <p>Gauge your mood!</p>
-</div>
-
-<nav class="navbar navbar-inverse">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="#">Find your thoughts</a>
+  <body ng-controller="ThoughtAnalyzerController">
+  <div class="bg">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-5 col-sm-offset-1">
+              <h1>Thought Analyzer</h1>
+              <br>
+              <form role="form" ng-submit="getResults()">
+                <div class="form-group">
+                  <input type="text" ng-model="text" name="text" class="form-control" id="text-box" placeholder="Enter your thoughts..." style="max-width: 300px;">
+                </div>
+                  <!--raw is added so that the jinja template does not process the submiteButtonText part as some variable.
+                  And it is left for angular to process and replace it with the text from main.js-->
+                {% raw %}
+                <button type="submit" class="btn btn-primary" ng-disabled="loading">{{ submitButtonText }}</button>
+                {% endraw %}
+              </form>
+              <br>
+              {% for error in errors %}
+                <h4>{{ error }}</h4>
+              {% endfor %}
+                <br>
+            </div>
+        </div>
+        <div class="col-sm-5 col-sm-offset-1">
+            {% raw %}
+            <div id="results">
+                <span ng-repeat="key in results">
+                    You seem to be in {{ results['sentiment'] }} mood!
+                </span>
+            </div>
+            {% endraw %}
+            <br>
+        </div>
     </div>
-    <div class="collapse navbar-collapse" id="myNavbar">
-      <ul class="nav navbar-nav">
-        <li class="active"><a href="#">I want to try it!</a></li>
-        <li><a href="#">How does it work?</a></li>
-      </ul>
     </div>
-  </div>
-</nav>
-
-</body>
+    <script src="//code.jquery.com/jquery-2.2.1.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+  </body>
 </html>
