@@ -5,6 +5,8 @@ from sklearn.externals import joblib
 from ml_code.pre_processing import clean_text
 from ml_code.pre_processing import text_count
 loaded_model = joblib.load('ml_code/output/best_logreg_final_model.pkl')
+tc = text_count.TextCount()
+ct = clean_text.CleanText()
 
 
 def read_model_and_predict(text):
@@ -16,8 +18,6 @@ def read_model_and_predict(text):
     try:
         global loaded_model
         new_positive_tweets = pd.Series(text)
-        tc = text_count.TextCount()
-        ct = clean_text.CleanText()
         df_counts_pos = tc.transform(new_positive_tweets)
         df_clean_pos = ct.transform(new_positive_tweets)
         df_model_pos = df_counts_pos
